@@ -1,1 +1,1 @@
-adaDGTI
+Stoic Platform 
