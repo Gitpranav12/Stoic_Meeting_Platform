@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Dashboard from "./pages/dashboard/Dashboard";
 import ChatDashboard from "./pages/chatTab/ChatDashboard";
+import MeetingPage from "./pages/MeetingPage";
 
 
 export default function App() {
@@ -25,6 +26,11 @@ export default function App() {
       {screen === "chat" && (
         <ChatDashboard onNavigate={handleNavigate} onLogout={handleLogout}
           active={screen} // ✅ pass current tab
+        />
+      )}
+       {screen === "meeting" && (
+        <MeetingPage onNavigate={handleNavigate} onLogout={handleLogout}
+          active={screen}
         />
       )}
 
