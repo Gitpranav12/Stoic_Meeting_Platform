@@ -8,9 +8,12 @@ import {
   Settings,
   LogOut,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom"; // ✅ import useNavigate
 import Logo from "./Logo";
 
-export default function Sidebar({ active = "dashboard", onNavigate, onLogout }) {
+export default function Sidebar({ active = "dashboard", onLogout }) {
+  const navigate = useNavigate(); // ✅ React Router navigation hook
+
   return (
     <motion.div
       initial={{ x: -100, opacity: 0 }}
@@ -26,8 +29,7 @@ export default function Sidebar({ active = "dashboard", onNavigate, onLogout }) 
 
       {/* Navigation Buttons */}
       <div className="flex-grow-1">
-     
-        {/* Meetings */}
+        {/* Dashboard / Meetings */}
         <Button
           variant="light"
           className={`w-100 text-start mb-2 d-flex align-items-center gap-2 ${
@@ -35,7 +37,7 @@ export default function Sidebar({ active = "dashboard", onNavigate, onLogout }) 
               ? "bg-primary-subtle text-primary fw-semibold"
               : ""
           }`}
-          onClick={() => onNavigate("dashboard")}
+          onClick={() => navigate("/dashboard")} // ✅ fixed
         >
           <Video size={18} /> Meetings
         </Button>
@@ -48,7 +50,7 @@ export default function Sidebar({ active = "dashboard", onNavigate, onLogout }) 
               ? "bg-primary-subtle text-primary fw-semibold"
               : ""
           }`}
-          onClick={() => onNavigate("chat")}
+          onClick={() => navigate("/chat")} // ✅ fixed
         >
           <MessageSquare size={18} /> Chat
           <Badge bg="primary" pill className="ms-auto">
@@ -64,7 +66,7 @@ export default function Sidebar({ active = "dashboard", onNavigate, onLogout }) 
               ? "bg-primary-subtle text-primary fw-semibold"
               : ""
           }`}
-          onClick={() => onNavigate("settings")}
+          onClick={() => navigate("/settings")} // ✅ fixed
         >
           <Settings size={18} /> Settings
         </Button>
