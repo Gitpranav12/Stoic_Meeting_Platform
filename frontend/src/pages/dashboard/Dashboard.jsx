@@ -17,7 +17,7 @@ import {
 import { Modal, Button, Form, Card, Badge, InputGroup } from "react-bootstrap";
 import Sidebar from "../../common/Sidebar";
 
-export default function Dashboard({ active = "dashboard", onNavigate, onLogout }) {
+export default function Dashboard({ active = "dashboard"}) {
   const [showNewMeetingDialog, setShowNewMeetingDialog] = useState(false);
   const [meetingLink, setMeetingLink] = useState("");
   const [copied, setCopied] = useState(false);
@@ -90,14 +90,14 @@ export default function Dashboard({ active = "dashboard", onNavigate, onLogout }
   const handleJoinMeeting = () => {
     if (userName.trim()) {
       setShowNewMeetingDialog(false);
-      onNavigate("meeting");
+     // onNavigate("meeting");
     }
   };
 
   return (
     <div className="d-flex min-vh-100 bg-light">
       {/* ✅ Sidebar Component */}
-      <Sidebar onNavigate={onNavigate} onLogout={onLogout}  active={active}/>
+      <Sidebar  active={active}/>
 
       {/* Main Content */}
       <div className="flex-grow-1 d-flex flex-column">
@@ -126,7 +126,7 @@ export default function Dashboard({ active = "dashboard", onNavigate, onLogout }
             <div
               className="bg-secondary text-white rounded-circle d-flex justify-content-center align-items-center"
               style={{ width: "36px", height: "36px", cursor: "pointer" }}
-              onClick={() => onNavigate("settings")} // navigate to settings
+             // onClick={() => onNavigate("settings")} // navigate to settings
             >
               JD
             </div>
@@ -170,7 +170,7 @@ export default function Dashboard({ active = "dashboard", onNavigate, onLogout }
 
               <div className="col-md-4">
                 <Card
-                  onClick={() => onNavigate("meeting")}
+                 // onClick={() => onNavigate("meeting")}
                   className="h-100 shadow-sm hover-shadow"
                 >
                   <Card.Body className="d-flex align-items-center gap-3">
@@ -189,7 +189,7 @@ export default function Dashboard({ active = "dashboard", onNavigate, onLogout }
 
               <div className="col-md-4">
                 <Card
-                  onClick={() => onNavigate("chat")}
+                  //onClick={() => onNavigate("chat")}
                   className="h-100 shadow-sm hover-shadow"
                 >
                   <Card.Body className="d-flex align-items-center gap-3">
@@ -234,7 +234,10 @@ export default function Dashboard({ active = "dashboard", onNavigate, onLogout }
                             <Badge bg="secondary">{meeting.date}</Badge>
                           </div>
                         </div>
-                        <Button size="sm" onClick={() => onNavigate("meeting")}>
+                        <Button size="sm" 
+                        //onClick={() => onNavigate("meeting")}
+                        
+                        >
                           Join
                         </Button>
                       </motion.div>
@@ -255,7 +258,7 @@ export default function Dashboard({ active = "dashboard", onNavigate, onLogout }
                         key={msg.id}
                         whileHover={{ scale: 1.02 }}
                         className="d-flex align-items-start border rounded p-3 mb-3"
-                        onClick={() => onNavigate("chat")}
+                       // onClick={() => onNavigate("chat")}
                       >
                         <div
                           className="bg-secondary text-white rounded-circle d-flex justify-content-center align-items-center me-3"

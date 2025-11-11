@@ -15,39 +15,125 @@ import {
 import { Button, Form, InputGroup, Badge, Nav, Tab } from "react-bootstrap";
 import Sidebar from "../../common/Sidebar"; // optional reuse of your Sidebar component
 
-export default function ChatDashboard({ active = "chat", onNavigate, onLogout }) {
+//export default function ChatDashboard({ active = "chat", onNavigate, onLogout }) {
+export default function ChatDashboard({ active = "chat" }) {
   const [selectedChat, setSelectedChat] = useState("team-alpha");
   const [message, setMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
 
   const groupChats = [
-    { id: "team-alpha", name: "Team Alpha", lastMessage: "Great work on the presentation!", time: "2h ago", unread: 3 },
-    { id: "design-team", name: "Design Team", lastMessage: "Updated mockups shared", time: "4h ago", unread: 0 },
-    { id: "all-hands", name: "All Hands", lastMessage: "Meeting at 3 PM", time: "1d ago", unread: 1 },
+    {
+      id: "team-alpha",
+      name: "Team Alpha",
+      lastMessage: "Great work on the presentation!",
+      time: "2h ago",
+      unread: 3,
+    },
+    {
+      id: "design-team",
+      name: "Design Team",
+      lastMessage: "Updated mockups shared",
+      time: "4h ago",
+      unread: 0,
+    },
+    {
+      id: "all-hands",
+      name: "All Hands",
+      lastMessage: "Meeting at 3 PM",
+      time: "1d ago",
+      unread: 1,
+    },
   ];
 
   const privateChats = [
-    { id: "sarah", name: "Sarah Johnson", lastMessage: "Can we reschedule?", time: "5m ago", unread: 2 },
-    { id: "mike", name: "Mike Chen", lastMessage: "Thanks for the update!", time: "1h ago", unread: 0 },
-    { id: "alex", name: "Alex Rivera", lastMessage: "See you tomorrow", time: "3h ago", unread: 0 },
+    {
+      id: "sarah",
+      name: "Sarah Johnson",
+      lastMessage: "Can we reschedule?",
+      time: "5m ago",
+      unread: 2,
+    },
+    {
+      id: "mike",
+      name: "Mike Chen",
+      lastMessage: "Thanks for the update!",
+      time: "1h ago",
+      unread: 0,
+    },
+    {
+      id: "alex",
+      name: "Alex Rivera",
+      lastMessage: "See you tomorrow",
+      time: "3h ago",
+      unread: 0,
+    },
   ];
 
   const chatMessages = {
     "team-alpha": [
-      { id: 1, user: "Sarah Johnson", text: "Hey everyone! Ready for the presentation?", time: "10:00 AM", isOwn: false },
-      { id: 2, user: "Mike Chen", text: "Yes, all set! The slides look great.", time: "10:02 AM", isOwn: false },
-      { id: 3, user: "You", text: "Thanks! I added the final metrics.", time: "10:05 AM", isOwn: true },
-      { id: 4, user: "Alex Rivera", text: "Perfect timing. Client is joining in 10 mins.", time: "10:08 AM", isOwn: false },
-      { id: 5, user: "Sarah Johnson", text: "Great work on the presentation! 🎉", time: "11:30 AM", isOwn: false },
+      {
+        id: 1,
+        user: "Sarah Johnson",
+        text: "Hey everyone! Ready for the presentation?",
+        time: "10:00 AM",
+        isOwn: false,
+      },
+      {
+        id: 2,
+        user: "Mike Chen",
+        text: "Yes, all set! The slides look great.",
+        time: "10:02 AM",
+        isOwn: false,
+      },
+      {
+        id: 3,
+        user: "You",
+        text: "Thanks! I added the final metrics.",
+        time: "10:05 AM",
+        isOwn: true,
+      },
+      {
+        id: 4,
+        user: "Alex Rivera",
+        text: "Perfect timing. Client is joining in 10 mins.",
+        time: "10:08 AM",
+        isOwn: false,
+      },
+      {
+        id: 5,
+        user: "Sarah Johnson",
+        text: "Great work on the presentation! 🎉",
+        time: "11:30 AM",
+        isOwn: false,
+      },
     ],
     sarah: [
-      { id: 1, user: "Sarah Johnson", text: "Hi! Do you have a moment?", time: "9:00 AM", isOwn: false },
-      { id: 2, user: "You", text: "Sure! What's up?", time: "9:02 AM", isOwn: true },
-      { id: 3, user: "Sarah Johnson", text: "Can we reschedule the meeting?", time: "9:05 AM", isOwn: false },
+      {
+        id: 1,
+        user: "Sarah Johnson",
+        text: "Hi! Do you have a moment?",
+        time: "9:00 AM",
+        isOwn: false,
+      },
+      {
+        id: 2,
+        user: "You",
+        text: "Sure! What's up?",
+        time: "9:02 AM",
+        isOwn: true,
+      },
+      {
+        id: 3,
+        user: "Sarah Johnson",
+        text: "Can we reschedule the meeting?",
+        time: "9:05 AM",
+        isOwn: false,
+      },
     ],
   };
 
-  const currentMessages = chatMessages[selectedChat] || chatMessages["team-alpha"];
+  const currentMessages =
+    chatMessages[selectedChat] || chatMessages["team-alpha"];
 
   const handleSendMessage = (e) => {
     e.preventDefault();
@@ -60,9 +146,9 @@ export default function ChatDashboard({ active = "chat", onNavigate, onLogout })
 
   return (
     <div className="d-flex min-vh-100 bg-light">
-    
-        {/* ✅ Sidebar Component */}
-           <Sidebar onNavigate={onNavigate} onLogout={onLogout} active={active} />
+      {/* ✅ Sidebar Component */}
+      {/* <Sidebar onNavigate={onNavigate} onLogout={onLogout} active={active} /> */}
+      <Sidebar active={active} />
 
       {/* Chat List */}
       <motion.div
@@ -74,7 +160,9 @@ export default function ChatDashboard({ active = "chat", onNavigate, onLogout })
       >
         <div className="p-3 border-bottom">
           <InputGroup>
-            <InputGroup.Text><Search size={16} /></InputGroup.Text>
+            <InputGroup.Text>
+              <Search size={16} />
+            </InputGroup.Text>
             <Form.Control placeholder="Search messages..." />
           </InputGroup>
         </div>
@@ -89,7 +177,10 @@ export default function ChatDashboard({ active = "chat", onNavigate, onLogout })
             </Nav.Item>
           </Nav>
 
-          <Tab.Content className="overflow-auto" style={{ height: "calc(100vh - 150px)" }}>
+          <Tab.Content
+            className="overflow-auto"
+            style={{ height: "calc(100vh - 150px)" }}
+          >
             {/* Group Chats */}
             <Tab.Pane eventKey="groups" className="p-3">
               {groupChats.map((chat) => (
@@ -98,22 +189,36 @@ export default function ChatDashboard({ active = "chat", onNavigate, onLogout })
                   whileHover={{ scale: 1.02 }}
                   onClick={() => setSelectedChat(chat.id)}
                   className={`p-3 rounded mb-2 border ${
-                    selectedChat === chat.id ? "border-primary bg-primary-subtle" : "border-light bg-white"
+                    selectedChat === chat.id
+                      ? "border-primary bg-primary-subtle"
+                      : "border-light bg-white"
                   }`}
                   style={{ cursor: "pointer" }}
                 >
                   <div className="d-flex align-items-start">
-                    <div className="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center me-3" style={{ width: "36px", height: "36px" }}>
-                      {chat.name.split(" ").map((n) => n[0]).join("")}
+                    <div
+                      className="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center me-3"
+                      style={{ width: "36px", height: "36px" }}
+                    >
+                      {chat.name
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")}
                     </div>
                     <div className="flex-grow-1">
                       <div className="d-flex justify-content-between">
                         <strong>{chat.name}</strong>
                         <small className="text-muted">{chat.time}</small>
                       </div>
-                      <p className="text-muted small mb-0">{chat.lastMessage}</p>
+                      <p className="text-muted small mb-0">
+                        {chat.lastMessage}
+                      </p>
                     </div>
-                    {chat.unread > 0 && <Badge bg="danger" pill>{chat.unread}</Badge>}
+                    {chat.unread > 0 && (
+                      <Badge bg="danger" pill>
+                        {chat.unread}
+                      </Badge>
+                    )}
                   </div>
                 </motion.div>
               ))}
@@ -127,22 +232,36 @@ export default function ChatDashboard({ active = "chat", onNavigate, onLogout })
                   whileHover={{ scale: 1.02 }}
                   onClick={() => setSelectedChat(chat.id)}
                   className={`p-3 rounded mb-2 border ${
-                    selectedChat === chat.id ? "border-primary bg-primary-subtle" : "border-light bg-white"
+                    selectedChat === chat.id
+                      ? "border-primary bg-primary-subtle"
+                      : "border-light bg-white"
                   }`}
                   style={{ cursor: "pointer" }}
                 >
                   <div className="d-flex align-items-start">
-                    <div className="bg-secondary text-white rounded-circle d-flex justify-content-center align-items-center me-3" style={{ width: "36px", height: "36px" }}>
-                      {chat.name.split(" ").map((n) => n[0]).join("")}
+                    <div
+                      className="bg-secondary text-white rounded-circle d-flex justify-content-center align-items-center me-3"
+                      style={{ width: "36px", height: "36px" }}
+                    >
+                      {chat.name
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")}
                     </div>
                     <div className="flex-grow-1">
                       <div className="d-flex justify-content-between">
                         <strong>{chat.name}</strong>
                         <small className="text-muted">{chat.time}</small>
                       </div>
-                      <p className="text-muted small mb-0">{chat.lastMessage}</p>
+                      <p className="text-muted small mb-0">
+                        {chat.lastMessage}
+                      </p>
                     </div>
-                    {chat.unread > 0 && <Badge bg="danger" pill>{chat.unread}</Badge>}
+                    {chat.unread > 0 && (
+                      <Badge bg="danger" pill>
+                        {chat.unread}
+                      </Badge>
+                    )}
                   </div>
                 </motion.div>
               ))}
@@ -161,17 +280,27 @@ export default function ChatDashboard({ active = "chat", onNavigate, onLogout })
           className="bg-white border-bottom p-3 d-flex justify-content-between align-items-center"
         >
           <div className="d-flex align-items-center gap-3">
-            <div className="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center" style={{ width: "36px", height: "36px" }}>TA</div>
+            <div
+              className="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center"
+              style={{ width: "36px", height: "36px" }}
+            >
+              TA
+            </div>
             <div>
               <h6 className="mb-0">Team Alpha</h6>
               <small className="text-muted">6 members</small>
             </div>
           </div>
           <div className="d-flex gap-2">
-            <Button variant="outline-primary" onClick={() => onNavigate("meeting")}>
+            <Button
+              variant="outline-primary"
+              // onClick={() => onNavigate("meeting")}
+            >
               <Video size={16} className="me-2" /> Start Call
             </Button>
-            <Button variant="light"><MoreVertical size={18} /></Button>
+            <Button variant="light">
+              <MoreVertical size={18} />
+            </Button>
           </div>
         </motion.div>
 
@@ -183,16 +312,33 @@ export default function ChatDashboard({ active = "chat", onNavigate, onLogout })
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
-              className={`d-flex mb-3 ${msg.isOwn ? "justify-content-end" : ""}`}
+              className={`d-flex mb-3 ${
+                msg.isOwn ? "justify-content-end" : ""
+              }`}
             >
-              <div className={`d-flex ${msg.isOwn ? "flex-row-reverse" : ""} gap-2`} style={{ maxWidth: "70%" }}>
+              <div
+                className={`d-flex ${
+                  msg.isOwn ? "flex-row-reverse" : ""
+                } gap-2`}
+                style={{ maxWidth: "70%" }}
+              >
                 {!msg.isOwn && (
-                  <div className="bg-secondary text-white rounded-circle d-flex justify-content-center align-items-center" style={{ width: "32px", height: "32px" }}>
-                    {msg.user.split(" ").map((n) => n[0]).join("")}
+                  <div
+                    className="bg-secondary text-white rounded-circle d-flex justify-content-center align-items-center"
+                    style={{ width: "32px", height: "32px" }}
+                  >
+                    {msg.user
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")}
                   </div>
                 )}
                 <div>
-                  {!msg.isOwn && <small className="text-muted d-block mb-1">{msg.user}</small>}
+                  {!msg.isOwn && (
+                    <small className="text-muted d-block mb-1">
+                      {msg.user}
+                    </small>
+                  )}
                   <div
                     className={`rounded px-3 py-2 ${
                       msg.isOwn ? "bg-primary text-white" : "bg-light text-dark"
@@ -200,19 +346,49 @@ export default function ChatDashboard({ active = "chat", onNavigate, onLogout })
                   >
                     {msg.text}
                   </div>
-                  <small className={`text-muted mt-1 d-block ${msg.isOwn ? "text-end" : ""}`}>{msg.time}</small>
+                  <small
+                    className={`text-muted mt-1 d-block ${
+                      msg.isOwn ? "text-end" : ""
+                    }`}
+                  >
+                    {msg.time}
+                  </small>
                 </div>
               </div>
             </motion.div>
           ))}
 
           {isTyping && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="d-flex align-items-center gap-2">
-              <div className="bg-secondary text-white rounded-circle d-flex justify-content-center align-items-center" style={{ width: "32px", height: "32px" }}>SJ</div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="d-flex align-items-center gap-2"
+            >
+              <div
+                className="bg-secondary text-white rounded-circle d-flex justify-content-center align-items-center"
+                style={{ width: "32px", height: "32px" }}
+              >
+                SJ
+              </div>
               <div className="bg-light rounded px-3 py-2 d-flex gap-1">
-                <motion.div className="bg-secondary rounded-circle" style={{ width: 6, height: 6 }} animate={{ y: [0, -5, 0] }} transition={{ repeat: Infinity, duration: 0.6 }} />
-                <motion.div className="bg-secondary rounded-circle" style={{ width: 6, height: 6 }} animate={{ y: [0, -5, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay: 0.2 }} />
-                <motion.div className="bg-secondary rounded-circle" style={{ width: 6, height: 6 }} animate={{ y: [0, -5, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay: 0.4 }} />
+                <motion.div
+                  className="bg-secondary rounded-circle"
+                  style={{ width: 6, height: 6 }}
+                  animate={{ y: [0, -5, 0] }}
+                  transition={{ repeat: Infinity, duration: 0.6 }}
+                />
+                <motion.div
+                  className="bg-secondary rounded-circle"
+                  style={{ width: 6, height: 6 }}
+                  animate={{ y: [0, -5, 0] }}
+                  transition={{ repeat: Infinity, duration: 0.6, delay: 0.2 }}
+                />
+                <motion.div
+                  className="bg-secondary rounded-circle"
+                  style={{ width: 6, height: 6 }}
+                  animate={{ y: [0, -5, 0] }}
+                  transition={{ repeat: Infinity, duration: 0.6, delay: 0.4 }}
+                />
               </div>
             </motion.div>
           )}
@@ -225,15 +401,24 @@ export default function ChatDashboard({ active = "chat", onNavigate, onLogout })
           transition={{ duration: 0.3 }}
           className="bg-white border-top p-3"
         >
-          <Form onSubmit={handleSendMessage} className="d-flex align-items-center gap-2">
-            <Button variant="light" type="button"><Paperclip size={18} /></Button>
+          <Form
+            onSubmit={handleSendMessage}
+            className="d-flex align-items-center gap-2"
+          >
+            <Button variant="light" type="button">
+              <Paperclip size={18} />
+            </Button>
             <Form.Control
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Type a message..."
             />
-            <Button variant="light" type="button"><Smile size={18} /></Button>
-            <Button variant="primary" type="submit"><Send size={18} /></Button>
+            <Button variant="light" type="button">
+              <Smile size={18} />
+            </Button>
+            <Button variant="primary" type="submit">
+              <Send size={18} />
+            </Button>
           </Form>
         </motion.div>
       </div>
