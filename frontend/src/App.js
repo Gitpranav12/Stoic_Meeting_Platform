@@ -4,7 +4,9 @@ import LoginPage from "./pages/Loginpages/login";
 import SignupPage from "./pages/Loginpages/SignupPage";
 import Dashboard from "./pages/dashboard/Dashboard";
 import ChatDashboard from "./pages/chatTab/ChatDashboard";
-import MeetingPage from "./pages/MeetingPage";
+import MeetingPage from "./pages/WaitingRoom/MeetingPage";
+import ErrorPage from "./pages/ErrorPage/Errorpage";
+import MeetingEndPage from "./pages/MeetingEndPage/MeetingEndPage";
 
 
 export default function App() {
@@ -33,15 +35,18 @@ export default function App() {
           <Route path="/meeting/:meetingId" element={<MeetingRoom />} />
           <Route path="/meeting/:meetingId/chat" element={<ChatPanel />} />
           <Route path="/meeting/:meetingId/participants" element={<ParticipantsPanel />} />
-          <Route path="/meeting-ended" element={<MeetingEndPage />} />
+         
 
           */}
+
+          {/* Meeting End page */}
+            <Route path="/meeting-ended" element={<MeetingEndPage />} />
 
             {/* Settings */}
             {/* <Route path="/settings" element={<ProfileSettings />} /> */}
 
             {/* Fallback */}
-            {/* <Route path="/error" element={<ErrorPage />} /> */}
+            <Route path="/error" element={<ErrorPage />} />
 
           </Routes>
         </div>

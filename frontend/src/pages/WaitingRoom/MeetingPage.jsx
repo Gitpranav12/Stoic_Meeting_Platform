@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import WaitingRoom from "../components/WaitingRoom";
+import WaitingRoom from "../../components/WaitingRoom";
 
 export default function MeetingPage() {
   // This state simulates: Meeting NOT started yet
