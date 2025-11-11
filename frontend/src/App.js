@@ -4,7 +4,7 @@ import LoginPage from "./pages/Loginpages/login";
 import SignupPage from "./pages/Loginpages/SignupPage";
 import Dashboard from "./pages/dashboard/Dashboard";
 import ChatDashboard from "./pages/chatTab/ChatDashboard";
-import MeetingPage from "./pages/MeetingPage";
+import MeetingPage from "./pages/MeetingRoom";
 
 
 export default function App() {
