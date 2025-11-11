@@ -242,19 +242,53 @@ export default function Dashboard({ active = "dashboard" }) {
       </div>
 
       {/* New Meeting Modal */}
+      {/* Inline Overlay for Modal Blur */}
+      {showNewMeetingDialog && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 1040,
+            background: "rgba(40,38,38,0.35)",
+            backdropFilter: "blur(4px)",
+          }}
+        />
+      )}
+
+      {/* New Meeting Modal */}
       <Modal
         show={showNewMeetingDialog}
         onHide={() => setShowNewMeetingDialog(false)}
         centered
         size="lg"
+        style={{
+          zIndex: 1050, // Ensure modal is above overlay
+        }}
       >
-        <Modal.Header closeButton>
+        <Modal.Header
+          closeButton
+          style={{ background: "#1e2428ff", color: "#ffff" }}
+        >
           <Modal.Title>Start New Meeting</Modal.Title>
         </Modal.Header>
-        <Modal.Body className="p-4">
+        <Modal.Body
+          className="p-4"
+          style={{
+            background: "#2b3033ff",
+            color: "#fff",
+            borderBottomLeftRadius: 12,
+            borderBottomRightRadius: 12,
+          }}
+        >
           <div className="row">
             {/* Left: Camera Preview */}
-            <div className="col-lg-6 bg-dark text-center text-white rounded p-4">
+            <div
+              className="col-lg-6 bg-dark text-center text-white rounded p-3 d-flex flex-column justify-content-between"
+              style={{ minHeight: "350px" }}
+            >
               <div className="mb-4">
                 {isCameraPreviewOn ? (
                   <div>
@@ -276,7 +310,8 @@ export default function Dashboard({ active = "dashboard" }) {
               <div className="d-flex justify-content-center gap-3">
                 <Button
                   variant={isCameraPreviewOn ? "secondary" : "danger"}
-                  className="rounded-circle p-3"
+                  className="rounded-circle d-flex justify-content-center align-items-center"
+                  style={{ width: "56px", height: "56px", padding: 0 }}
                   onClick={() => setIsCameraPreviewOn(!isCameraPreviewOn)}
                 >
                   {isCameraPreviewOn ? (
@@ -287,7 +322,8 @@ export default function Dashboard({ active = "dashboard" }) {
                 </Button>
                 <Button
                   variant={isMicPreviewOn ? "secondary" : "danger"}
-                  className="rounded-circle p-3"
+                  className="rounded-circle d-flex justify-content-center align-items-center"
+                  style={{ width: "56px", height: "56px", padding: 0 }}
                   onClick={() => setIsMicPreviewOn(!isMicPreviewOn)}
                 >
                   {isMicPreviewOn ? <Mic size={18} /> : <MicOff size={18} />}
@@ -318,7 +354,7 @@ export default function Dashboard({ active = "dashboard" }) {
                   <Form.Control value={meetingId} readOnly />
                 </Form.Group>
                 <Button
-                  variant="secondary"
+                  variant="primary"
                   className="w-100 mb-2"
                   disabled={!userName.trim()}
                   onClick={handleJoinMeetingClick}

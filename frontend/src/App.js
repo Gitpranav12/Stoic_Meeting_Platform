@@ -4,7 +4,7 @@ import LoginPage from "./pages/Loginpages/login";
 import SignupPage from "./pages/Loginpages/SignupPage";
 import Dashboard from "./pages/dashboard/Dashboard";
 import ChatDashboard from "./pages/chatTab/ChatDashboard";
-import MeetingPage from "./pages/WaitingRoom/MeetingPage";
+import MeetingPage from "./pages/WaitingRoom/MeetingWaitingPage";
 import ErrorPage from "./pages/ErrorPage/Errorpage";
 import MeetingEndPage from "./pages/MeetingEndPage/MeetingEndPage";
 import ProfileSettings from "./pages/profile/ProfileSettings"
