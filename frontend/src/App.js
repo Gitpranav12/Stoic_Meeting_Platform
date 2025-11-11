@@ -7,6 +7,7 @@ import ChatDashboard from "./pages/chatTab/ChatDashboard";
 import MeetingPage from "./pages/WaitingRoom/MeetingPage";
 import ErrorPage from "./pages/ErrorPage/Errorpage";
 import MeetingEndPage from "./pages/MeetingEndPage/MeetingEndPage";
+import ProfileSettings from "./pages/profile/ProfileSettings"
 
 
 export default function App() {
@@ -43,7 +44,7 @@ export default function App() {
             <Route path="/meeting-ended" element={<MeetingEndPage />} />
 
             {/* Settings */}
-            {/* <Route path="/settings" element={<ProfileSettings />} /> */}
+            <Route path="/settings" element={<ProfileSettings />} />
 
             {/* Fallback */}
             <Route path="/error" element={<ErrorPage />} />

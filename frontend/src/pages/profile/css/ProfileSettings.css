@@ -1,0 +1,263 @@
+/* =============================
+   General Layout
+============================= */
+body {
+  background-color: #f8f9fb;
+  font-family: "Inter", "Poppins", sans-serif;
+}
+
+.profile-settings-container {
+  max-width: 100%;
+}
+
+/* =============================
+   Card Styling
+============================= */
+.card {
+  border: none !important;
+  border-radius: 1rem !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 6px 26px rgba(0, 0, 0, 0.08) !important;
+}
+
+.card-header {
+  border-bottom: none;
+  background-color: #fff !important;
+  border-radius: 1rem 1rem 0 0 !important;
+}
+
+/* =============================
+   Form Controls
+============================= */
+.form-control {
+  border-radius: 0.5rem !important;
+  border: 1px solid #dee2e6 !important;
+  transition: 0.2s ease;
+}
+
+.form-control:focus {
+  border-color: #007bff !important;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.15) !important;
+}
+
+
+/* =============================
+   Avatar Styling
+============================= */
+.profile-avatar {
+  border-radius: 50%;
+  border: 4px solid #f1f3f6;
+  transition: 0.3s;
+}
+
+.profile-camera-btn {
+  background: #343a40;
+  border: none;
+  color: white;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 0.5rem;
+  transition: 0.3s;
+}
+
+.profile-camera-btn:hover {
+  background: #212529;
+}
+
+/* =============================
+   Tabs Styling
+============================= */
+.nav-tabs .nav-link {
+  border: none !important;
+  color: #6c757d !important;
+  font-weight: 500;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem !important;
+  margin-right: 0.5rem;
+}
+
+.nav-tabs .nav-link.active {
+  background: #e9f2ff !important;
+  color: #0d6efd !important;
+}
+
+/* =============================
+   Responsive
+============================= */
+@media (max-width: 768px) {
+  .profile-settings-container {
+    padding: 1rem;
+  }
+
+  .card-body {
+    flex-direction: column !important;
+  }
+
+  .profile-camera-btn {
+    bottom: 10px;
+    right: 10px;
+  }
+}
+
+/* =============================
+   Settings Tabs Styling
+============================= */
+.custom-tabs {
+  border-bottom: none !important;
+  background: #f8f9fb;
+  border-radius: 1rem;
+  padding: 0.3rem;
+  gap: 0.5rem;
+}
+
+.custom-tabs .nav-item {
+  flex: 1;
+}
+
+.custom-tabs .nav-link {
+  border: none !important;
+  background-color: transparent !important;
+  border-radius: 0.75rem !important;
+  color: #6c757d !important;
+  font-weight: 500;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.custom-tabs .nav-link:hover {
+  background: #eef3fa !important;
+  color: #0d6efd !important;
+}
+
+.custom-tabs .nav-link.active {
+  background: #e9f2ff !important;
+  color: #0d6efd !important;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(13, 110, 253, 0.15);
+}
+
+.tab-content-card {
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+  transition: 0.3s ease;
+}
+
+/* Responsive Tab Layout */
+@media (max-width: 768px) {
+  .custom-tabs {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .custom-tabs .nav-link {
+    font-size: 0.9rem;
+    padding: 0.6rem;
+  }
+}
+
+
+/* =============================
+   Preferences Tab Styling
+============================= */
+.preferences-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.pref-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.3s ease;
+  padding: 0.5rem 0;
+}
+
+.pref-item:hover {
+  background: #f9fafc;
+  border-radius: 0.75rem;
+  padding-left: 0.5rem;
+}
+
+.pref-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+}
+
+.bg-purple {
+  background: #a06cff !important;
+}
+
+
+/* Responsive */
+@media (max-width: 576px) {
+  .pref-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+  }
+
+  .pref-item:hover {
+    padding-left: 0;
+  }
+}
+
+
+/* =============================
+   Security Tab Styling
+============================= */
+.security-container .card {
+  border-radius: 1rem !important;
+}
+
+.security-container .form-control {
+  font-size: 0.95rem;
+}
+
+/* Make icons align neatly and inputs consistent */
+.security-container .border.rounded {
+  transition: 0.2s ease;
+}
+
+.security-container .border.rounded:hover {
+  background-color: #f0f4ff;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  .security-container .d-flex.justify-content-between {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 1rem;
+  }
+}
+
+
+/* =============================
+   Custom Switch Styling
+============================= */
+.custom-switch .form-check-input {
+  width: 2.8em;
+  height: 1.4em;
+  cursor: pointer;
+  background-color: #d5d8dc;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.custom-switch .form-check-input:checked {
+  background-color: #007bff;
+  box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+}
+
