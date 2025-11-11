@@ -50,7 +50,7 @@ export default function Sidebar({ active = "dashboard", onLogout }) {
               ? "bg-primary-subtle text-primary fw-semibold"
               : ""
           }`}
-          onClick={() => navigate("/chat")} // ✅ fixed
+          onClick={() => navigate("/dashboard/chat")} // ✅ fixed
         >
           <MessageSquare size={18} /> Chat
           <Badge bg="primary" pill className="ms-auto">
