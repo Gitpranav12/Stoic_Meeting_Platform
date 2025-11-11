@@ -16,8 +16,10 @@ import {
 } from "lucide-react";
 import { Modal, Button, Form, Card, Badge, InputGroup } from "react-bootstrap";
 import Sidebar from "../../common/Sidebar";
+import QuickActions from "./QuickActions";
+import { useNavigate } from "react-router-dom";
 
-export default function Dashboard({ active = "dashboard"}) {
+export default function Dashboard({ active = "dashboard" }) {
   const [showNewMeetingDialog, setShowNewMeetingDialog] = useState(false);
   const [meetingLink, setMeetingLink] = useState("");
   const [copied, setCopied] = useState(false);
@@ -25,6 +27,8 @@ export default function Dashboard({ active = "dashboard"}) {
   const [meetingId, setMeetingId] = useState("");
   const [isCameraPreviewOn, setIsCameraPreviewOn] = useState(false);
   const [isMicPreviewOn, setIsMicPreviewOn] = useState(true);
+
+  const navigate = useNavigate();
 
   const upcomingMeetings = [
     {
@@ -87,17 +91,14 @@ export default function Dashboard({ active = "dashboard"}) {
     setShowNewMeetingDialog(true);
   };
 
-  const handleJoinMeeting = () => {
-    if (userName.trim()) {
-      setShowNewMeetingDialog(false);
-     // onNavigate("meeting");
-    }
+  const handleJoinMeetingClick = () => {
+    navigate("/meeting");
   };
 
   return (
     <div className="d-flex min-vh-100 bg-light">
       {/* ✅ Sidebar Component */}
-      <Sidebar  active={active}/>
+      <Sidebar active={active} />
 
       {/* Main Content */}
       <div className="flex-grow-1 d-flex flex-column">
@@ -126,7 +127,7 @@ export default function Dashboard({ active = "dashboard"}) {
             <div
               className="bg-secondary text-white rounded-circle d-flex justify-content-center align-items-center"
               style={{ width: "36px", height: "36px", cursor: "pointer" }}
-             // onClick={() => onNavigate("settings")} // navigate to settings
+              onClick={() => navigate("/settings")}
             >
               JD
             </div>
@@ -148,62 +149,11 @@ export default function Dashboard({ active = "dashboard"}) {
             </div>
 
             {/* Quick Actions */}
-            <div className="row g-4 mb-4">
-              <div className="col-md-4">
-                <Card
-                  onClick={handleStartNewMeeting}
-                  className="h-100 shadow-sm hover-shadow"
-                >
-                  <Card.Body className="d-flex align-items-center gap-3">
-                    <div className="bg-primary-subtle p-3 rounded">
-                      <Plus size={24} className="text-primary" />
-                    </div>
-                    <div>
-                      <h6>Start New Meeting</h6>
-                      <p className="text-muted small mb-0">
-                        Create instant meeting
-                      </p>
-                    </div>
-                  </Card.Body>
-                </Card>
-              </div>
-
-              <div className="col-md-4">
-                <Card
-                 // onClick={() => onNavigate("meeting")}
-                  className="h-100 shadow-sm hover-shadow"
-                >
-                  <Card.Body className="d-flex align-items-center gap-3">
-                    <div className="bg-success-subtle p-3 rounded">
-                      <Video size={24} className="text-success" />
-                    </div>
-                    <div>
-                      <h6>Join Meeting</h6>
-                      <p className="text-muted small mb-0">
-                        Enter meeting code
-                      </p>
-                    </div>
-                  </Card.Body>
-                </Card>
-              </div>
-
-              <div className="col-md-4">
-                <Card
-                  //onClick={() => onNavigate("chat")}
-                  className="h-100 shadow-sm hover-shadow"
-                >
-                  <Card.Body className="d-flex align-items-center gap-3">
-                    <div className="bg-info-subtle p-3 rounded">
-                      <MessageSquare size={24} className="text-info" />
-                    </div>
-                    <div>
-                      <h6>Open Chat</h6>
-                      <p className="text-muted small mb-0">View all messages</p>
-                    </div>
-                  </Card.Body>
-                </Card>
-              </div>
-            </div>
+            <QuickActions
+              onStartMeeting={handleStartNewMeeting}
+              onJoinMeeting={handleJoinMeetingClick}
+              onOpenChat={() => navigate("/dashboard/chat")}
+            />
 
             {/* Upcoming Meetings & Messages */}
             <div className="row g-4">
@@ -234,9 +184,9 @@ export default function Dashboard({ active = "dashboard"}) {
                             <Badge bg="secondary">{meeting.date}</Badge>
                           </div>
                         </div>
-                        <Button size="sm" 
-                        //onClick={() => onNavigate("meeting")}
-                        
+                        <Button
+                          size="sm"
+                          //onClick={() => onNavigate("meeting")}
                         >
                           Join
                         </Button>
@@ -258,7 +208,7 @@ export default function Dashboard({ active = "dashboard"}) {
                         key={msg.id}
                         whileHover={{ scale: 1.02 }}
                         className="d-flex align-items-start border rounded p-3 mb-3"
-                       // onClick={() => onNavigate("chat")}
+                        // onClick={() => onNavigate("chat")}
                       >
                         <div
                           className="bg-secondary text-white rounded-circle d-flex justify-content-center align-items-center me-3"
@@ -371,7 +321,7 @@ export default function Dashboard({ active = "dashboard"}) {
                   variant="secondary"
                   className="w-100 mb-2"
                   disabled={!userName.trim()}
-                  onClick={handleJoinMeeting}
+                  onClick={handleJoinMeetingClick}
                 >
                   Join now
                 </Button>
