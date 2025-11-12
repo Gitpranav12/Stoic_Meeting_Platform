@@ -1,8 +1,10 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Clock, Users,Home, Plus, Copy } from "lucide-react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css"; 
 export default function MeetingEndPage() {
+   const navigate = useNavigate();
   const meetingId = "meeting-dmaf03zca";
 
   const copyMeetingId = () => {
@@ -117,7 +119,8 @@ export default function MeetingEndPage() {
       border: "none",
       width:"100%",
     }}
-  >
+      onClick={() => navigate("/meeting")} // ✅ Go to MeetingPage
+            >
     <i className="bi bi-telephone me-2"></i>
     Rejoin Meeting
   </button>
@@ -142,6 +145,7 @@ export default function MeetingEndPage() {
       e.target.style.backgroundColor = "white";
       e.target.style.color = "black";
     }}
+     onClick={() => navigate("/dashboard")}
   >
     <Plus size={14} className="me-2" />
     New Meeting
@@ -167,6 +171,7 @@ export default function MeetingEndPage() {
       e.target.style.backgroundColor = "white";
       e.target.style.color = "black";
     }}
+    onClick={() => navigate("/")}
   >
     <Home size={14} className="me-2" />
     Go Home
