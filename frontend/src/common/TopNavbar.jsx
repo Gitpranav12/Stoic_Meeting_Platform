@@ -1,17 +1,16 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Search, Bell } from "lucide-react";
+import { Search, Bell, Menu } from "lucide-react";
 import { Button, Form, InputGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
-export default function TopNavbar({ active = "dashboard" }) {
+export default function TopNavbar({ active = "dashboard", onMenuClick }) {
   const navigate = useNavigate();
 
   const renderSearchBar = () => {
     if (active === "dashboard") {
-      // Meetings search bar
       return (
-        <InputGroup style={{ maxWidth: "400px" }}>
+         <InputGroup style={{ maxWidth: "400px" }}>
           <InputGroup.Text>
             <Search size={16} />
           </InputGroup.Text>
@@ -19,7 +18,6 @@ export default function TopNavbar({ active = "dashboard" }) {
         </InputGroup>
       );
     } else if (active === "chat") {
-      // Chat search bar
       return (
         <div className="p-1 w-100" style={{ maxWidth: "400px" }}>
           <InputGroup>
@@ -31,10 +29,15 @@ export default function TopNavbar({ active = "dashboard" }) {
         </div>
       );
     } else {
-      // Settings → empty space for consistent layout
+       // ✅ Responsive heading for Settings page
       return (
-        <div style={{ width: "400px" }}>
-          <h3>Profile & Settings</h3>
+        <div
+          className="d-flex align-items-center"
+          style={{
+            minWidth: 0, // allow shrink
+          }}
+        >
+          <h5 className="mb-0 text-truncate">Profile & Settings</h5>
         </div>
       );
     }
@@ -47,8 +50,19 @@ export default function TopNavbar({ active = "dashboard" }) {
       transition={{ duration: 0.3 }}
       className="bg-white border-bottom p-3 d-flex justify-content-between align-items-center"
     >
-      {/* ✅ Always keep left section width consistent */}
-      {renderSearchBar()}
+      <div className="d-flex align-items-center gap-3">
+        {/* ✅ Mobile Menu Icon */}
+        <Button
+          variant="light"
+          className="d-md-none rounded-circle p-2 shadow-sm"
+          onClick={onMenuClick}
+        >
+          <Menu size={20} />
+        </Button>
+
+        {/* ✅ Search or Heading */}
+        {renderSearchBar()}
+      </div>
 
       {/* 🔔 Notifications + Profile */}
       <div className="d-flex align-items-center gap-3">
