@@ -14,21 +14,21 @@ export default function SettingsTabs() {
         id="settings-tabs"
         activeKey={key}
         onSelect={(k) => setKey(k)}
-        className="custom-tabs mb-4"
+        className="custom-tabs-p mb-4"
         justify
       >
         <Tab eventKey="preferences" title="Preferences">
-          <div className="tab-content-card">
+          <div className="tab-content-card-p">
             <PreferencesTab />
           </div>
         </Tab>
         <Tab eventKey="security" title="Security">
-          <div className="tab-content-card">
+          <div className="tab-content-card-p">
             <SecurityTab />
           </div>
         </Tab>
         <Tab eventKey="notifications" title="Notifications">
-          <div className="tab-content-card">
+          <div className="tab-content-card-p">
             <NotificationsTab />
           </div>
         </Tab>

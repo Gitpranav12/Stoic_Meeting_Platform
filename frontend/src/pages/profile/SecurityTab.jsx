@@ -6,7 +6,7 @@ import "./css/ProfileSettings.css";
 export default function SecurityTab() {
   return (
     <div className="security-container">
-      <div className="card shadow-sm border-0">
+      <div className="border-0">
         <div className="card-body">
           <h5 className="fw-semibold mb-3">Password Management</h5>
 

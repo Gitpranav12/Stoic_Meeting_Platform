@@ -6,15 +6,16 @@ import "./css/ProfileSettings.css"; // Reuse same stylesheet
 export default function ProfileCard() {
   const profilePhotoUrl = "/images/default-avatar.png";
   return (
-    <div className="card mb-4 shadow-sm">
-      <div className="card-header bg-white my-1 p-3 mb-0">
+    <div className="card-p mb-4 shadow-sm">
+      <div className="card-header-p bg-white my-1 p-3 mb-0">
         <h5 className="mb-0 fw-semibold">Profile Information</h5>
         <small className="text-muted">Update your personal details</small>
-        <hr class="border-2 border-dark mt-2 mb-0"></hr>
+        {/* <hr class="border-2 border-dark mt-2 mb-0"></hr> */}
       </div>
     
       <div className="card-body">
-        <div className="d-flex flex-wrap align-items-start gap-4">
+        <hr class="border-2 border-dark mt-0"></hr>
+        <div className="d-flex flex-wrap align-items-start gap-4 mx-3">
           {/* Avatar Section */}
           <div className="position-relative mx-auto mx-md-0">
             <img
@@ -67,7 +68,7 @@ export default function ProfileCard() {
                 </div>
               </Form.Group>
 
-              <div className="mt-3 my-2">
+              <div className="my-3">
                 <Button type="button" className="px-4 py-2 fw-semibold btn btn-primary">
                   Save Changes
                 </Button>

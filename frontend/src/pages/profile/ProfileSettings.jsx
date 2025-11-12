@@ -7,7 +7,7 @@ export default function ProfileSettings() {
   return (
     <div className="d-flex min-vh-100 bg-light">
       <div className="flex-grow-1 d-flex flex-column">
-        <div className="container py-4 profile-settings-container mx-3">
+        <div className="container py-4 profile-settings-container mx-1 p-4">
           {/* <div className="text-start mb-4">
             <p className="text-muted mb-0">
               Manage your account and preferences
