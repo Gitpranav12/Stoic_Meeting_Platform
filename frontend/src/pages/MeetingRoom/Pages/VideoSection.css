@@ -1,0 +1,12 @@
+.video-section {
+  background-color: #fffcfc;
+  border-radius: 10px;
+}
+
+.video-section .rounded {
+  border-radius: 15px !important;
+}
+
+.video-section .shadow {
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}

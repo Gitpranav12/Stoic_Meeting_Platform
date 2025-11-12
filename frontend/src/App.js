@@ -8,6 +8,7 @@ import MeetingPage from "./pages/WaitingRoom/MeetingWaitingPage";
 import ErrorPage from "./pages/ErrorPage/Errorpage";
 import MeetingEndPage from "./pages/MeetingEndPage/MeetingEndPage";
 import ProfileSettings from "./pages/profile/ProfileSettings"
+import MeetingRoom from "./pages/MeetingRoom/MeetingRoom";
 
 
 export default function App() {
@@ -39,6 +40,8 @@ export default function App() {
          
 
           */}
+          {/* Meeting Room */}
+            <Route path="/meeting-room" element={<MeetingRoom />} />
 
           {/* Meeting End page */}
             <Route path="/meeting-ended" element={<MeetingEndPage />} />
