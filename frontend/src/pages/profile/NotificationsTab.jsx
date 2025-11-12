@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { motion } from "framer-motion";
-import { FaEnvelopeOpenText, FaBell, FaMobileAlt } from "react-icons/fa";
 import SwitchToggle from "./SwitchToggle";
 import "./css/ProfileSettings.css";
 
@@ -14,8 +12,12 @@ export default function NotificationsTab() {
       {/* Email Notifications */}
       <div className="pref-item">
         <div className="d-flex align-items-center gap-3">
-          <div className="pref-icon bg-primary text-white">
-            <FaEnvelopeOpenText />
+          <div className="pref-icon text-white">
+            <img
+              src="/icons/email-noti.png"
+              alt="Change profile"
+              style={{ width: "38px", height: "38px" }}
+            />
           </div>
           <div>
             <h6 className="mb-0 fw-semibold">Email Notifications</h6>
@@ -32,8 +34,12 @@ export default function NotificationsTab() {
       {/* Push Notifications */}
       <div className="pref-item">
         <div className="d-flex align-items-center gap-3">
-          <div className="pref-icon bg-success text-white">
-            <FaBell />
+          <div className="pref-icon text-white">
+            <img
+              src="/icons/push-noti.png"
+              alt="Change profile"
+              style={{ width: "38px", height: "38px" }}
+            />
           </div>
           <div>
             <h6 className="mb-0 fw-semibold">Push Notifications</h6>
@@ -50,8 +56,12 @@ export default function NotificationsTab() {
       {/* SMS Alerts */}
       <div className="pref-item">
         <div className="d-flex align-items-center gap-3">
-          <div className="pref-icon bg-warning text-white">
-            <FaMobileAlt />
+          <div className="pref-icon text-white">
+            <img
+              src="/icons/sms-alerts.png"
+              alt="Change profile"
+              style={{ width: "38px", height: "38px" }}
+            />
           </div>
           <div>
             <h6 className="mb-0 fw-semibold">SMS Alerts</h6>

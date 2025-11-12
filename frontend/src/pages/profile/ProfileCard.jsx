@@ -1,5 +1,4 @@
 import React from "react";
-import { FaCamera, FaEnvelope } from "react-icons/fa";
 import { Button, Form } from "react-bootstrap";
 import "./css/ProfileSettings.css"; // Reuse same stylesheet
 
@@ -32,7 +31,11 @@ export default function ProfileCard() {
               className="profile-camera-btn shadow rounded-3"
               title="Change Profile Picture"
             >
-              <FaCamera />
+              <img
+                src="/icons/camera.png"
+                alt="Change profile"
+                style={{ width: "16px", height: "16px" }}
+              />
             </Button>
           </div>
 
@@ -59,7 +62,12 @@ export default function ProfileCard() {
                   Email Address
                 </Form.Label>
                 <div className="d-flex align-items-center border rounded px-2 py-1 bg-light">
-                  <FaEnvelope className="me-2 text-muted" />
+                  <img
+                    src="/icons/email.png"
+                    alt="Email icon"
+                    className="me-2"
+                    style={{ width: "16px", height: "16px", opacity: 0.7 }}
+                  />
                   <Form.Control
                     type="email"
                     placeholder="john.doe@example.com"

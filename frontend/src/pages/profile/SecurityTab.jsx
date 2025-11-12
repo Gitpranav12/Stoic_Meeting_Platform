@@ -1,6 +1,5 @@
 import React from "react";
 import { Form, Button } from "react-bootstrap";
-import { FaLock, FaShieldAlt } from "react-icons/fa";
 import "./css/ProfileSettings.css";
 
 export default function SecurityTab() {
@@ -17,7 +16,12 @@ export default function SecurityTab() {
                 Current Password
               </Form.Label>
               <div className="d-flex align-items-center border rounded px-2 py-1 bg-light">
-                <FaLock className="me-2 text-muted" />
+                <img
+                  src="/icons/lock.png"
+                  alt="Email icon"
+                  className="me-2"
+                  style={{ width: "16px", height: "16px", opacity: 0.7 }}
+                />
                 <Form.Control
                   type="password"
                   placeholder="Enter current password"
@@ -32,7 +36,12 @@ export default function SecurityTab() {
                 New Password
               </Form.Label>
               <div className="d-flex align-items-center border rounded px-2 py-1 bg-light">
-                <FaLock className="me-2 text-muted" />
+                <img
+                  src="/icons/lock.png"
+                  alt="Email icon"
+                  className="me-2"
+                  style={{ width: "16px", height: "16px", opacity: 0.7 }}
+                />
                 <Form.Control
                   type="password"
                   placeholder="Enter new password"
@@ -47,7 +56,12 @@ export default function SecurityTab() {
                 Confirm New Password
               </Form.Label>
               <div className="d-flex align-items-center border rounded px-2 py-1 bg-light">
-                <FaLock className="me-2 text-muted" />
+                <img
+                  src="/icons/lock.png"
+                  alt="Email icon"
+                  className="me-2"
+                  style={{ width: "16px", height: "16px", opacity: 0.7 }}
+                />
                 <Form.Control
                   type="password"
                   placeholder="Confirm new password"
@@ -66,8 +80,12 @@ export default function SecurityTab() {
           {/* Two Factor Section */}
           <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
             <div className="d-flex align-items-center gap-3">
-              <div className="pref-icon bg-danger text-white">
-                <FaShieldAlt />
+              <div className="pref-icon text-white">
+                <img
+                  src="/icons/shield.png"
+                  alt="Change profile"
+                  style={{ width: "38px", height: "38px" }}
+                />
               </div>
               <div>
                 <h6 className="fw-semibold mb-0">Two-Factor Authentication</h6>

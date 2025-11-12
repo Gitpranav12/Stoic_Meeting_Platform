@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { motion } from "framer-motion";
-import { FaMoon, FaVideo, FaDesktop } from "react-icons/fa";
 import SwitchToggle from "./SwitchToggle";
 import "./css/ProfileSettings.css";
 
@@ -14,8 +12,12 @@ export default function PreferencesTab() {
       {/* Dark Mode */}
       <div className="pref-item">
         <div className="d-flex align-items-center gap-3">
-          <div className="pref-icon bg-purple text-white">
-            <FaMoon />
+          <div className="pref-icon text-white">
+            <img
+              src="/icons/dark-mode.png"
+              alt="Change profile"
+              style={{ width: "38px", height: "38px" }}
+            />
           </div>
           <div>
             <h6 className="mb-0 fw-semibold">Dark Mode Preview</h6>
@@ -30,8 +32,12 @@ export default function PreferencesTab() {
       {/* Auto Join */}
       <div className="pref-item">
         <div className="d-flex align-items-center gap-3">
-          <div className="pref-icon bg-info text-white">
-            <FaDesktop />
+          <div className="pref-icon text-white">
+            <img
+              src="/icons/video-camera.png"
+              alt="Change profile"
+              style={{ width: "38px", height: "38px" }}
+            />
           </div>
           <div>
             <h6 className="mb-0 fw-semibold">Auto-join with video on</h6>
@@ -46,8 +52,12 @@ export default function PreferencesTab() {
       {/* Sound Effects */}
       <div className="pref-item">
         <div className="d-flex align-items-center gap-3">
-          <div className="pref-icon bg-success text-white">
-            <FaVideo />
+          <div className="pref-icon text-white">
+            <img
+              src="/icons/sound.png"
+              alt="Change profile"
+              style={{ width: "38px", height: "38px" }}
+            />
           </div>
           <div>
             <h6 className="mb-0 fw-semibold">Sound Effects</h6>

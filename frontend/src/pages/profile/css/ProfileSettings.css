@@ -52,7 +52,7 @@
 }
 
 .profile-camera-btn {
-  background: #343a40;
+  background: #fff;
   border: none;
   color: white;
   position: absolute;
@@ -63,7 +63,7 @@
 }
 
 .profile-camera-btn:hover {
-  background: #212529;
+  background: #9dc3fc;
 }
 
 /* =============================
