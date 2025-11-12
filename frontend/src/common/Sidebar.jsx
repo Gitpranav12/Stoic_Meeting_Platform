@@ -11,8 +11,17 @@ import {
 import { useNavigate } from "react-router-dom"; // ✅ import useNavigate
 import Logo from "./Logo";
 
-export default function Sidebar({ active = "dashboard", onLogout }) {
+export default function Sidebar({ active = "dashboard" }) {
   const navigate = useNavigate(); // ✅ React Router navigation hook
+
+  const handleLogout = () => {
+    // 🧹 Clear user session
+    localStorage.clear();
+    // ✅ Optionally clear sessionStorage too
+    sessionStorage.clear();
+    // 🚀 Redirect to login
+    navigate("/login");
+  };
 
   return (
     <motion.div
@@ -77,7 +86,7 @@ export default function Sidebar({ active = "dashboard", onLogout }) {
         <Button
           variant="light"
           className="w-100 text-start text-danger d-flex align-items-center gap-2"
-          onClick={onLogout}
+          onClick={handleLogout}
         >
           <LogOut size={18} /> Logout
         </Button>

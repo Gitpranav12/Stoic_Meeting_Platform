@@ -1,22 +1,15 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import {
-  LayoutDashboard,
   Video,
-  MessageSquare,
-  Settings,
-  LogOut,
-  Search,
   Send,
   Paperclip,
   Smile,
   MoreVertical,
 } from "lucide-react";
-import { Button, Form, InputGroup, Badge, Nav, Tab } from "react-bootstrap";
-import Sidebar from "../../common/Sidebar"; // optional reuse of your Sidebar component
+import { Button, Form, Badge, Nav, Tab } from "react-bootstrap";
 
-//export default function ChatDashboard({ active = "chat", onNavigate, onLogout }) {
-export default function ChatDashboard({ active = "chat" }) {
+export default function ChatDashboard() {
   const [selectedChat, setSelectedChat] = useState("team-alpha");
   const [message, setMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -146,10 +139,6 @@ export default function ChatDashboard({ active = "chat" }) {
 
   return (
     <div className="d-flex min-vh-100 bg-light">
-      {/* ✅ Sidebar Component */}
-      {/* <Sidebar onNavigate={onNavigate} onLogout={onLogout} active={active} /> */}
-      <Sidebar active={active} />
-
       {/* Chat List */}
       <motion.div
         initial={{ x: -50, opacity: 0 }}
@@ -158,15 +147,6 @@ export default function ChatDashboard({ active = "chat" }) {
         className="bg-white border-end flex-shrink-0"
         style={{ width: "320px" }}
       >
-        <div className="p-3 border-bottom">
-          <InputGroup>
-            <InputGroup.Text>
-              <Search size={16} />
-            </InputGroup.Text>
-            <Form.Control placeholder="Search messages..." />
-          </InputGroup>
-        </div>
-
         <Tab.Container defaultActiveKey="groups">
           <Nav variant="tabs" className="px-3">
             <Nav.Item>

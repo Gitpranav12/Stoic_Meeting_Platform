@@ -2,27 +2,20 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import {
   Video,
-  MessageSquare,
   Settings,
-  Search,
-  Plus,
   Clock,
   Users,
-  Bell,
   VideoOff,
   MicOff,
   Mic,
   Camera,
 } from "lucide-react";
-import { Modal, Button, Form, Card, Badge, InputGroup } from "react-bootstrap";
-import Sidebar from "../../common/Sidebar";
+import { Modal, Button, Form, Card, Badge } from "react-bootstrap";
 import QuickActions from "./QuickActions";
 import { useNavigate } from "react-router-dom";
 
-export default function Dashboard({ active = "dashboard" }) {
+export default function Dashboard() {
   const [showNewMeetingDialog, setShowNewMeetingDialog] = useState(false);
-  const [meetingLink, setMeetingLink] = useState("");
-  const [copied, setCopied] = useState(false);
   const [userName, setUserName] = useState("");
   const [meetingId, setMeetingId] = useState("");
   const [isCameraPreviewOn, setIsCameraPreviewOn] = useState(false);
@@ -97,43 +90,8 @@ export default function Dashboard({ active = "dashboard" }) {
 
   return (
     <div className="d-flex min-vh-100 bg-light">
-      {/* ✅ Sidebar Component */}
-      <Sidebar active={active} />
-
       {/* Main Content */}
       <div className="flex-grow-1 d-flex flex-column">
-        {/* Top Navbar */}
-        <motion.div
-          initial={{ y: -50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.3 }}
-          className="bg-white border-bottom p-3 d-flex justify-content-between align-items-center"
-        >
-          <InputGroup style={{ maxWidth: "400px" }}>
-            <InputGroup.Text>
-              <Search size={16} />
-            </InputGroup.Text>
-            <Form.Control placeholder="Search meetings, messages, or people..." />
-          </InputGroup>
-
-          <div className="d-flex align-items-center gap-3">
-            <Button
-              variant="light"
-              className="position-relative rounded-circle p-2"
-            >
-              <Bell size={18} />
-              <span className="position-absolute top-0 start-100 translate-middle p-1 bg-danger rounded-circle"></span>
-            </Button>
-            <div
-              className="bg-secondary text-white rounded-circle d-flex justify-content-center align-items-center"
-              style={{ width: "36px", height: "36px", cursor: "pointer" }}
-              onClick={() => navigate("/settings")}
-            >
-              JD
-            </div>
-          </div>
-        </motion.div>
-
         {/* Dashboard Body */}
         <div className="p-4 overflow-auto">
           <motion.div
@@ -184,10 +142,7 @@ export default function Dashboard({ active = "dashboard" }) {
                             <Badge bg="secondary">{meeting.date}</Badge>
                           </div>
                         </div>
-                        <Button
-                          size="sm"
-                          //onClick={() => onNavigate("meeting")}
-                        >
+                        <Button size="sm" onClick={handleJoinMeetingClick}>
                           Join
                         </Button>
                       </motion.div>
@@ -208,7 +163,7 @@ export default function Dashboard({ active = "dashboard" }) {
                         key={msg.id}
                         whileHover={{ scale: 1.02 }}
                         className="d-flex align-items-start border rounded p-3 mb-3"
-                        // onClick={() => onNavigate("chat")}
+                        onClick={() => navigate("/dashboard/chat")}
                       >
                         <div
                           className="bg-secondary text-white rounded-circle d-flex justify-content-center align-items-center me-3"
