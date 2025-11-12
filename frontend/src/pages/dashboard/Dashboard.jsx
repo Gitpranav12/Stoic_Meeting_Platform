@@ -1,17 +1,10 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import {
-  Video,
-  Settings,
-  Clock,
-  Users,
-  VideoOff,
-  MicOff,
-  Mic,
-  Camera,
-} from "lucide-react";
-import { Modal, Button, Form, Card, Badge } from "react-bootstrap";
+import {Video,Settings,Clock,Users,VideoOff,MicOff,Mic,Camera,Share2,Link as LinkIcon,} from "lucide-react";
+import { useEffect, useRef } from "react";
+import { Modal, Button, Form, Card, Badge, Alert } from "react-bootstrap";
 import QuickActions from "./QuickActions";
+import SettingsModal from "../../components/Settings";
 import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
@@ -20,7 +13,10 @@ export default function Dashboard() {
   const [meetingId, setMeetingId] = useState("");
   const [isCameraPreviewOn, setIsCameraPreviewOn] = useState(false);
   const [isMicPreviewOn, setIsMicPreviewOn] = useState(true);
-
+  const [toastMessage, setToastMessage] = useState(""); // short UI feedback for copy/share
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const videoRef = useRef(null);
+  const mediaStreamRef = useRef(null);
   const navigate = useNavigate();
 
   const upcomingMeetings = [
@@ -86,6 +82,118 @@ export default function Dashboard() {
 
   const handleJoinMeetingClick = () => {
     navigate("/meeting");
+  };
+
+  // --- Camera control functions ---
+  const startCameraStream = async () => {
+    try {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        setToastMessage("Camera API not available in this browser.");
+        clearToastLater();
+        return;
+      }
+
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: false,
+      });
+      mediaStreamRef.current = stream;
+
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        videoRef.current.muted = true;
+        await videoRef.current.play().catch(() => {});
+      }
+    } catch (err) {
+      console.error("Failed to start camera:", err);
+      setToastMessage("Unable to access camera. Allow permission and retry.");
+      clearToastLater();
+    }
+  };
+
+  const stopCameraStream = () => {
+    const stream = mediaStreamRef.current;
+    if (stream && stream.getTracks) {
+      stream.getTracks().forEach((t) => t.stop());
+      mediaStreamRef.current = null;
+    }
+    if (videoRef.current) {
+      try {
+        videoRef.current.pause();
+        videoRef.current.srcObject = null;
+      } catch (e) {}
+    }
+  };
+
+  useEffect(() => {
+    if (isCameraPreviewOn) startCameraStream();
+    else stopCameraStream();
+    return stopCameraStream;
+  }, [isCameraPreviewOn]);
+
+  // --- Share link functions Added ---
+  const buildMeetingUrl = () => {
+    const base = window.location.origin || "https://example.com";
+    return `${base}/meeting/${meetingId || ""}`;
+  };
+
+  //  Updated copyMeetingLink with robust fallback for all browsers
+  const copyMeetingLink = async () => {
+    const link = buildMeetingUrl();
+
+    if (!meetingId) {
+      setToastMessage("❌ No meeting link available. Start a meeting first.");
+      clearToastLater();
+      return;
+    }
+
+    try {
+      if (
+        navigator.clipboard &&
+        typeof navigator.clipboard.writeText === "function"
+      ) {
+        await navigator.clipboard.writeText(link);
+        setToastMessage("✅ Meeting link copied successfully!");
+      } else {
+        const textArea = document.createElement("textarea");
+        textArea.value = link;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textArea);
+        setToastMessage("✅ Meeting link copied successfully!");
+      }
+    } catch (err) {
+      console.error("Copy failed:", err);
+      window.prompt("Copy this meeting link manually:", link);
+      setToastMessage("⚠️ Link shown — please copy manually.");
+    }
+
+    clearToastLater();
+  };
+
+  // shareMeetingLink with fallback to copyMeetingLink
+  const shareMeetingLink = async () => {
+    const link = buildMeetingUrl();
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: "Join my meeting",
+          text: `Join my meeting: ${meetingId}`,
+          url: link,
+        });
+        setToastMessage("📤 Shared meeting link");
+      } catch (err) {
+        console.info("Share cancelled", err);
+        setToastMessage("Share cancelled");
+      }
+    } else {
+      await copyMeetingLink();
+    }
+    clearToastLater();
+  };
+  const clearToastLater = (ms = 2200) => {
+    setTimeout(() => setToastMessage(""), ms);
   };
 
   return (
@@ -196,8 +304,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* New Meeting Modal */}
-      {/* Inline Overlay for Modal Blur */}
+      {/* New Meeting Modal & Inline Overlay for Modal Blur*/}
       {showNewMeetingDialog && (
         <div
           style={{
@@ -213,15 +320,15 @@ export default function Dashboard() {
         />
       )}
 
-      {/* New Meeting Modal */}
       <Modal
         show={showNewMeetingDialog}
-        onHide={() => setShowNewMeetingDialog(false)}
+        onHide={() => {
+          stopCameraStream(); // 🟢 Stop camera when modal closes
+          setShowNewMeetingDialog(false);
+        }}
         centered
         size="lg"
-        style={{
-          zIndex: 1050, // Ensure modal is above overlay
-        }}
+        style={{ zIndex: 1050 }}
       >
         <Modal.Header
           closeButton
@@ -234,8 +341,6 @@ export default function Dashboard() {
           style={{
             background: "#2b3033ff",
             color: "#fff",
-            borderBottomLeftRadius: 12,
-            borderBottomRightRadius: 12,
           }}
         >
           <div className="row">
@@ -247,12 +352,18 @@ export default function Dashboard() {
               <div className="mb-4">
                 {isCameraPreviewOn ? (
                   <div>
-                    <div
-                      className="rounded-circle bg-primary d-inline-flex justify-content-center align-items-center"
-                      style={{ width: "100px", height: "100px" }}
-                    >
-                      JD
-                    </div>
+                    <video
+                      ref={videoRef}
+                      style={{
+                        width: "100%",
+                        height: "240px",
+                        borderRadius: "8px",
+                        background: "#000",
+                        objectFit: "cover",
+                      }}
+                      playsInline
+                      autoPlay
+                    />
                     <p className="mt-3">Camera preview</p>
                   </div>
                 ) : (
@@ -262,11 +373,12 @@ export default function Dashboard() {
                   </div>
                 )}
               </div>
+
               <div className="d-flex justify-content-center gap-3">
                 <Button
                   variant={isCameraPreviewOn ? "secondary" : "danger"}
                   className="rounded-circle d-flex justify-content-center align-items-center"
-                  style={{ width: "56px", height: "56px", padding: 0 }}
+                  style={{ width: "56px", height: "56px" }}
                   onClick={() => setIsCameraPreviewOn(!isCameraPreviewOn)}
                 >
                   {isCameraPreviewOn ? (
@@ -278,7 +390,7 @@ export default function Dashboard() {
                 <Button
                   variant={isMicPreviewOn ? "secondary" : "danger"}
                   className="rounded-circle d-flex justify-content-center align-items-center"
-                  style={{ width: "56px", height: "56px", padding: 0 }}
+                  style={{ width: "56px", height: "56px" }}
                   onClick={() => setIsMicPreviewOn(!isMicPreviewOn)}
                 >
                   {isMicPreviewOn ? <Mic size={18} /> : <MicOff size={18} />}
@@ -304,10 +416,37 @@ export default function Dashboard() {
                     onChange={(e) => setUserName(e.target.value)}
                   />
                 </Form.Group>
+
+                {/* Added Share Link Buttons */}
                 <Form.Group className="mb-3">
                   <Form.Label>Meeting ID</Form.Label>
-                  <Form.Control value={meetingId} readOnly />
+                  <div className="d-flex gap-2">
+                    <Form.Control value={meetingId} readOnly />
+                    <Button
+                      variant="outline-secondary"
+                      onClick={copyMeetingLink}
+                    >
+                      <LinkIcon size={14} />
+                    </Button>
+                    <Button
+                      variant="outline-primary"
+                      onClick={shareMeetingLink}
+                    >
+                      <Share2 size={14} />
+                    </Button>
+                  </div>
+
+                  {/*  Visible Success Message Below Meeting ID */}
+                  {toastMessage && (
+                    <Alert
+                      variant="success"
+                      className="py-2 mt-2 mb-0 text-center"
+                    >
+                      {toastMessage}
+                    </Alert>
+                  )}
                 </Form.Group>
+
                 <Button
                   variant="primary"
                   className="w-100 mb-2"
@@ -316,10 +455,25 @@ export default function Dashboard() {
                 >
                   Join now
                 </Button>
-                <Button variant="outline-secondary" className="w-100">
-                  <Settings size={16} className="me-2" />
-                  Audio & video settings
+                {/* --- Audio & Video Settings Button --- */}
+                <Button
+                  variant="outline-secondary"
+                  className="w-100 mt-2 d-flex justify-content-center align-items-center gap-2"
+                  onClick={() => setSettingsOpen(true)}
+                  style={{
+                    borderColor: "#5f6368",
+                    color: "#e0e0e0",
+                    background: "transparent",
+                    transition: "all 0.2s ease",
+                  }}
+                >
+                  <Settings size={16} />
+                  <span>Audio & video settings</span>
                 </Button>
+                <SettingsModal
+                  show={settingsOpen}
+                  onClose={() => setSettingsOpen(false)}
+                />
               </Form>
             </div>
           </div>
