@@ -1,65 +1,44 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import LoginPage from "./pages/Loginpages/login";
-import SignupPage from "./pages/Loginpages/SignupPage";
+import Login from "./pages/LoginPages/Login";
+import SignupPage from "./pages/LoginPages/SignupPage";
 import Dashboard from "./pages/dashboard/Dashboard";
 import ChatDashboard from "./pages/chatTab/ChatDashboard";
 import MeetingWaitingPage from "./pages/WaitingRoom/MeetingWaitingPage";
 import ErrorPage from "./pages/ErrorPage/Errorpage";
 import MeetingEndPage from "./pages/MeetingEndPage/MeetingEndPage";
-import ProfileSettings from "./pages/profile/ProfileSettings"
+import ProfileSettings from "./pages/profile/ProfileSettings";
 import MeetingRoom from "./pages/MeetingRoom/MeetingRoom";
 import AppLayout from "./layout/AppLayout";
 
-
 export default function App() {
-
   return (
-    <>
-      <Router>
-        <div className="App">
-          <Routes>
+    <Router>
+      <div className="App">
+        <Routes>
 
-            {/* Auth */}
-            <Route path="/" element={<LoginPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
+          {/* Auth */}
+          <Route path="/" element={<Login />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignupPage />} />
 
-            {/* Layout Tab Pages */}
-            <Route element={<AppLayout />}>
-              {/* Dashboard */}
-              <Route path="/dashboard" element={<Dashboard />} />
-              {/* chat */}
-              <Route path="/dashboard/chat" element={<ChatDashboard />} />
-              {/* Settings */}
-              <Route path="/settings" element={<ProfileSettings />} />
-            </Route>
+          {/* Layout Pages */}
+          <Route element={<AppLayout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard/chat" element={<ChatDashboard />} />
+            <Route path="/settings" element={<ProfileSettings />} />
+          </Route>
 
-            {/* Meetings */}
-            {/*
-            
-            <Route path="/create-meeting" element={<CreateMeeting />} />
-            <Route path="/waiting-room/:meetingId" element={<WaitingRoom />} />
-            <Route path="/meeting/:meetingId" element={<MeetingRoom />} />
-            <Route path="/meeting/:meetingId/chat" element={<ChatPanel />} />
-            <Route path="/meeting/:meetingId/participants" element={<ParticipantsPanel />} />
-        
-            */}
+          {/* Meetings */}
+          <Route path="/meeting-room" element={<MeetingRoom />} />
+          <Route path="/meeting-ended" element={<MeetingEndPage />} />
+          <Route path="/meeting" element={<MeetingWaitingPage />} />
 
-            {/* Meeting Room */}
-            <Route path="/meeting-room" element={<MeetingRoom />} />
+          {/* Error Page */}
+          <Route path="/error" element={<ErrorPage />} />
+          <Route path="*" element={<ErrorPage />} />
 
-            {/* Meeting End page */}
-            <Route path="/meeting-ended" element={<MeetingEndPage />} />
-
-            {/* waiting Page */}
-            <Route path="/meeting" element={<MeetingWaitingPage />} />
-
-            {/* Fallback */}
-            <Route path="/error" element={<ErrorPage />} />
-
-          </Routes>
-        </div>
-      </Router>
-    </>
+        </Routes>
+      </div>
+    </Router>
   );
 }
