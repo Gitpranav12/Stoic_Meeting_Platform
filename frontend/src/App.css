@@ -36,3 +36,35 @@
     transform: rotate(360deg);
   }
 }
+
+
+html, body, #root {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* font Text configurations */
+
+.heading-text {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.sub-heading-text {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.normal-text {
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.heading-text,
+.sub-heading-text,
+.normal-text {
+    font-family: Arial, sans-serif;
+}
+
+
+/* font Text configurations End */
