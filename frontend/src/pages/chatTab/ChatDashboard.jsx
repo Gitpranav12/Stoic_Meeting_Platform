@@ -23,7 +23,7 @@ export default function ChatDashboard() {
 
    // ✅ Data
   const groupChats = [
-    { id: "team-alpha", name: "Team Alpha", lastMessage: "Great work on the presentation!", time: "2h ago", unread: 3 },
+    { id: "team-alpha", name: "Team Alpha", lastMessage: "Great work on the presentation! Great work on the presentation! Great work on the presentation!Great work on the presentation!Great work on the presentation!Great work on the presentation!Great work on the presentation!", time: "2h ago", unread: 3 },
     { id: "design-team", name: "Design Team", lastMessage: "Updated mockups shared", time: "4h ago", unread: 0 },
     { id: "all-hands", name: "All Hands", lastMessage: "Meeting at 3 PM", time: "1d ago", unread: 1 },
   ];

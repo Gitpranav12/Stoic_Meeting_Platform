@@ -67,7 +67,7 @@ export default function TopNavbar({ active = "dashboard", onMenuClick }) {
       </div>
 
       {/* 🔔 Notifications + Profile */}
-      <div className="d-flex align-items-center gap-3">
+      <div className="d-flex align-items-center gap-3 ms-3">
         <Button
           variant="light"
           className="position-relative rounded-circle p-2"

@@ -50,22 +50,38 @@ export default function ChatHeader({ currentChat, onBack }) {
           <Dropdown.Toggle
             as={Button}
             bsPrefix="no-caret"
-            variant="light"
+            variant="outline-primary"
             className="p-2 border-0"
             style={{ boxShadow: "none" }}
           >
             <MoreVertical size={18} />
           </Dropdown.Toggle>
 
-          {/* <Dropdown.Menu>
-            <Dropdown.Item>🔕 Mute Notifications</Dropdown.Item>
-            <Dropdown.Divider />
-            <Dropdown.Item>🧹 Clear Chat History</Dropdown.Item>
-            <Dropdown.Item>🗑 Delete Conversation</Dropdown.Item>
-            <Dropdown.Divider />
-            <Dropdown.Item>📤 Export Chat</Dropdown.Item>
-          </Dropdown.Menu> */}
+          <Dropdown.Menu>
+            <Dropdown.Item className="d-flex align-items-center gap-2">
+              <i className="bi bi-bell-slash text-primary"></i>
+              Mute Notifications
+            </Dropdown.Item>
 
+            <Dropdown.Divider />
+
+            <Dropdown.Item className="d-flex align-items-center gap-2">
+              <i className="bi bi-trash3 text-primary"></i>
+              Clear Chat History
+            </Dropdown.Item>
+
+            <Dropdown.Item className="d-flex align-items-center gap-2">
+              <i className="bi bi-x-circle text-primary"></i>
+              Delete Conversation
+            </Dropdown.Item>
+
+            <Dropdown.Divider />
+
+            <Dropdown.Item className="d-flex align-items-center gap-2">
+              <i className="bi bi-box-arrow-up-right text-primary"></i>
+              Export Chat
+            </Dropdown.Item>
+          </Dropdown.Menu>
         </Dropdown>
       </div>
     </motion.div>
