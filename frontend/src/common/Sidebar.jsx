@@ -9,12 +9,12 @@ export default function Sidebar({ active = "dashboard", isOpen, setIsOpen }) {
   const navigate = useNavigate();
 
   // ✅ Keep sidebar visible on desktop
-  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth > 1024);
 
   useEffect(() => {
     const handleResize = () => {
-      setIsDesktop(window.innerWidth >= 768);
-      if (window.innerWidth >= 768) setIsOpen(true);
+      setIsDesktop(window.innerWidth > 1024);
+      if (window.innerWidth > 1024) setIsOpen(true);
     };
     handleResize();
     window.addEventListener("resize", handleResize);

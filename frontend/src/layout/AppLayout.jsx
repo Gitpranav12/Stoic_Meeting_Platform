@@ -5,14 +5,19 @@ import TopNavbar from "../common/TopNavbar";
 
 export default function AppLayout() {
   const location = useLocation();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth >= 768);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 1024);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-      if (window.innerWidth >= 768) setIsSidebarOpen(true);
+      const mobile = window.innerWidth <= 1024;
+      setIsMobile(mobile);
+
+      // Sidebar always open only on desktop (>1024)
+      if (window.innerWidth > 1024) setIsSidebarOpen(true);
+      else setIsSidebarOpen(false);
     };
+
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);

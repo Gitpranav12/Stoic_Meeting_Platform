@@ -10,6 +10,7 @@ export default function ChatWindow({
   isTyping,
   handleSendMessage,
   onBack,
+   isMobile
 }) {
   return (
     <div
@@ -24,7 +25,7 @@ export default function ChatWindow({
         className="position-sticky top-0 bg-white border-bottom"
         style={{ zIndex: 10 }}
       >
-        <ChatHeader currentChat={currentChat} onBack={onBack} />
+        <ChatHeader currentChat={currentChat} onBack={onBack}  isMobile={isMobile} />
       </div>
 
       {/* ✅ Scrollable Message List */}

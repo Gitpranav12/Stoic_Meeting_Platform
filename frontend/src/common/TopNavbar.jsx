@@ -31,14 +31,8 @@ export default function TopNavbar({ active = "dashboard", onMenuClick }) {
         </div>
       );
     } else {
-      // ✅ Responsive heading for Settings page
       return (
-        <div
-          className="d-flex align-items-center"
-          style={{
-            minWidth: 0, // allow shrink
-          }}
-        >
+        <div className="d-flex align-items-center" style={{ minWidth: 0 }}>
           <h5 className="mb-0 text-truncate">Profile & Settings</h5>
         </div>
       );
@@ -53,25 +47,22 @@ export default function TopNavbar({ active = "dashboard", onMenuClick }) {
       className="bg-white border-bottom p-3 d-flex justify-content-between align-items-center"
     >
       <div className="d-flex align-items-center gap-3 flex-grow-1">
-        {/* ✅ Mobile Menu Icon */}
+        {/* ✅ Updated — show for ALL devices <= 1024px */}
         <Button
           variant="light"
-          className="d-md-none rounded-circle p-2 shadow-sm"
+          className="show-on-tablet rounded-circle p-2 shadow-sm"
           onClick={onMenuClick}
         >
           <Menu size={20} />
         </Button>
 
-        {/* ✅ Search or Heading */}
+        {/* Search bar or title */}
         {renderSearchBar()}
       </div>
 
-      {/* 🔔 Notifications + Profile */}
+      {/* Notifications + Profile */}
       <div className="d-flex align-items-center gap-3 ms-3">
-        <Button
-          variant="light"
-          className="position-relative rounded-circle p-2"
-        >
+        <Button variant="light" className="position-relative rounded-circle p-2">
           <Bell size={18} />
           <span className="position-absolute top-0 start-100 translate-middle p-1 bg-danger rounded-circle"></span>
         </Button>

@@ -12,7 +12,7 @@ export default function ChatList({
   privateChats,
 }) {
   // ✅ Detect mobile viewport width
-  const isMobile = window.innerWidth < 768;
+  const isMobile = window.innerWidth <= 1024;
 
   return (
     <motion.div

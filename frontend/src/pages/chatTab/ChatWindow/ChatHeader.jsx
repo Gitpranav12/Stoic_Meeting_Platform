@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Button, Dropdown } from "react-bootstrap";
 import { Video, MoreVertical, ArrowLeft } from "lucide-react";
 
-export default function ChatHeader({ currentChat, onBack }) {
+export default function ChatHeader({ currentChat, onBack, isMobile }) {
   return (
     <motion.div
       initial={{ y: -50, opacity: 0 }}
@@ -13,12 +13,8 @@ export default function ChatHeader({ currentChat, onBack }) {
     >
       <div className="d-flex align-items-center gap-3">
         {/* 🔙 Mobile Back Button */}
-        {onBack && (
-          <Button
-            variant="light"
-            className="d-md-none p-2 border-0"
-            onClick={onBack}
-          >
+        {onBack && isMobile && (
+          <Button variant="light" className="p-2 border-0" onClick={onBack}>
             <ArrowLeft size={20} />
           </Button>
         )}
