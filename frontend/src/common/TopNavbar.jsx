@@ -10,26 +10,28 @@ export default function TopNavbar({ active = "dashboard", onMenuClick }) {
   const renderSearchBar = () => {
     if (active === "dashboard") {
       return (
-         <InputGroup style={{ maxWidth: "400px" }}>
-          <InputGroup.Text>
-            <Search size={16} />
-          </InputGroup.Text>
-          <Form.Control placeholder="Search meetings, messages, or people..." />
-        </InputGroup>
-      );
-    } else if (active === "chat") {
-      return (
-        <div className="p-1 w-100" style={{ maxWidth: "400px" }}>
-          <InputGroup>
+        <div className="flex-grow-1">
+          <InputGroup className="w-100">
             <InputGroup.Text>
               <Search size={16} />
             </InputGroup.Text>
-            <Form.Control placeholder="Search messages..." />
+            <Form.Control placeholder="Search meetings, messages, or people..." />
+          </InputGroup>
+        </div>
+      );
+    } else if (active === "chat") {
+      return (
+        <div className="flex-grow-1">
+          <InputGroup className="w-100">
+            <InputGroup.Text>
+              <Search size={16} />
+            </InputGroup.Text>
+            <Form.Control placeholder="Search messages, or people..." />
           </InputGroup>
         </div>
       );
     } else {
-       // ✅ Responsive heading for Settings page
+      // ✅ Responsive heading for Settings page
       return (
         <div
           className="d-flex align-items-center"
@@ -50,7 +52,7 @@ export default function TopNavbar({ active = "dashboard", onMenuClick }) {
       transition={{ duration: 0.3 }}
       className="bg-white border-bottom p-3 d-flex justify-content-between align-items-center"
     >
-      <div className="d-flex align-items-center gap-3">
+      <div className="d-flex align-items-center gap-3 flex-grow-1">
         {/* ✅ Mobile Menu Icon */}
         <Button
           variant="light"

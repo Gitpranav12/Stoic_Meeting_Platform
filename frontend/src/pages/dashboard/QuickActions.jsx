@@ -40,7 +40,7 @@ export default function QuickActions({
         <div className="col-md-4" key={action.id}>
           <Card
             onClick={action.onClick}
-            className="h-100 shadow-sm hover-shadow cursor-pointer"
+            className="h-100 shadow-sm hover-shadow cursor-pointer card-p"
           >
             <Card.Body className="d-flex align-items-center gap-3">
               <div className={`${action.bg} p-3 rounded`}>{action.icon}</div>
