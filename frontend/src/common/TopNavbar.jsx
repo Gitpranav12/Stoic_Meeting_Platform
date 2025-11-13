@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 export default function TopNavbar({ active = "dashboard", onMenuClick }) {
   const navigate = useNavigate();
 
+  const isTabletOrMobile = window.innerWidth <= 1024;
+
   const renderSearchBar = () => {
     if (active === "dashboard") {
       return (
@@ -48,13 +50,15 @@ export default function TopNavbar({ active = "dashboard", onMenuClick }) {
     >
       <div className="d-flex align-items-center gap-3 flex-grow-1">
         {/* ✅ Updated — show for ALL devices <= 1024px */}
-        <Button
-          variant="light"
-          className="show-on-tablet rounded-circle p-2 shadow-sm"
-          onClick={onMenuClick}
-        >
-          <Menu size={20} />
-        </Button>
+        {isTabletOrMobile && (
+          <Button
+            variant="light"
+            className="rounded-circle p-2 shadow-sm"
+            onClick={onMenuClick}
+          >
+            <Menu size={20} />
+          </Button>
+        )}
 
         {/* Search bar or title */}
         {renderSearchBar()}
@@ -62,7 +66,10 @@ export default function TopNavbar({ active = "dashboard", onMenuClick }) {
 
       {/* Notifications + Profile */}
       <div className="d-flex align-items-center gap-3 ms-3">
-        <Button variant="light" className="position-relative rounded-circle p-2">
+        <Button
+          variant="light"
+          className="position-relative rounded-circle p-2"
+        >
           <Bell size={18} />
           <span className="position-absolute top-0 start-100 translate-middle p-1 bg-danger rounded-circle"></span>
         </Button>

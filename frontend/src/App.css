@@ -71,14 +71,3 @@ html, body, #root {
 
 
 
-
-/* Show menu icon on devices <= 1024px */
-.show-on-tablet {
-  display: inline-flex !important;
-}
-
-@media (min-width: 1025px) {
-  .show-on-tablet {
-    display: none !important;
-  }
-}
