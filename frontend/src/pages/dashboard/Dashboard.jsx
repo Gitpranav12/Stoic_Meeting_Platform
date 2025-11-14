@@ -22,6 +22,14 @@ export default function Dashboard() {
 
   const navigate = useNavigate();
 
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const loggedUser = JSON.parse(localStorage.getItem("loggedInUser"));
+    setUser(loggedUser);
+    console.log(loggedUser)
+  }, []);
+
   const upcomingMeetings = [
     {
       id: 1,
@@ -216,7 +224,7 @@ export default function Dashboard() {
             transition={{ duration: 0.3 }}
           >
             <div className="mb-4">
-              <h3>Welcome back, John!</h3>
+              <h3>Welcome back, {user?.fullName || user?.name}</h3>
               <p className="text-muted">
                 Here's what's happening with your meetings today.
               </p>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState , useEffect } from "react";
 import { motion } from "framer-motion";
 import { Search, Bell, Menu } from "lucide-react";
 import { Button, Form, InputGroup } from "react-bootstrap";
@@ -8,6 +8,19 @@ export default function TopNavbar({ active = "dashboard", onMenuClick }) {
   const navigate = useNavigate();
 
   const isTabletOrMobile = window.innerWidth <= 1024;
+
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const loggedUser = JSON.parse(localStorage.getItem("loggedInUser"));
+    setUser(loggedUser);
+  }, []);
+
+  const initials = user?.fullName
+    ?.split(" ")
+    .map((n) => n[0])
+    .join("");
+
 
   const renderSearchBar = () => {
     if (active === "dashboard") {
@@ -79,7 +92,7 @@ export default function TopNavbar({ active = "dashboard", onMenuClick }) {
           style={{ width: "36px", height: "36px", cursor: "pointer" }}
           onClick={() => navigate("/settings")}
         >
-          JD
+        {initials}
         </div>
       </div>
     </motion.div>
