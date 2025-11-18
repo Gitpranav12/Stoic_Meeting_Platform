@@ -1,4 +1,3 @@
-import React from "react";
 import { motion } from "framer-motion";
 import { Badge } from "react-bootstrap";
 
@@ -8,10 +7,15 @@ export default function ChatListItem({
   onSelect,
   avatarColor = "primary",
 }) {
-  const initials = chat.name
-    ?.split(" ")
-    .map((n) => n[0])
-    .join("");
+
+  const initials =
+    (chat.name || "")
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((n) => n[0])
+      .slice(0, 2)
+      .join("") || "?";
 
   return (
     <motion.div

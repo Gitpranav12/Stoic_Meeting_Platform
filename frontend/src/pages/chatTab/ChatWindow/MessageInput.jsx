@@ -3,8 +3,10 @@ import { motion } from "framer-motion";
 import { Button, Form, Badge } from "react-bootstrap";
 import { Send, Paperclip, Smile, X } from "lucide-react";
 import EmojiPicker from "emoji-picker-react";
+import { getSocket } from "../../../api/socket";
 
 export default function MessageInput({
+  currentChat,
   message,
   setMessage,
   handleSendMessage,
@@ -13,6 +15,7 @@ export default function MessageInput({
   const [selectedFiles, setSelectedFiles] = useState([]);
   const pickerRef = useRef(null);
   const fileInputRef = useRef(null);
+  const typingTimeoutRef = useRef(null);
 
   // // ✅ Close picker if user clicks outside
   useEffect(() => {
@@ -55,6 +58,50 @@ export default function MessageInput({
   // ✅ Trigger file picker
   const handleAttachmentClick = () => {
     if (fileInputRef.current) fileInputRef.current.click();
+  };
+
+  useEffect(() => {
+    return () => {
+      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+    };
+  }, []);
+
+  const emitTyping = (isTyping) => {
+    try {
+      const socket = getSocket();
+      if (!socket || !socket.connected) return;
+      const chatId = currentChat && (currentChat._id || currentChat);
+      if (!chatId) return;
+      socket.emit("message:typing", { chatId, isTyping });
+    } catch (err) {
+      // ignore errors
+    }
+  };
+
+  const handleChange = (e) => {
+    const val = e.target.value;
+    setMessage(val);
+
+    // emit typing true immediately
+    emitTyping(true);
+
+    // reset debounce to emit false after 1.5s of inactivity
+    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+    typingTimeoutRef.current = setTimeout(() => {
+      emitTyping(false);
+    }, 1500);
+  };
+
+  const onSubmit = (evt) => {
+    evt.preventDefault();
+    if (!message || !message.trim()) return;
+    // stop typing indicator
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+      typingTimeoutRef.current = null;
+    }
+    emitTyping(false);
+    handleSendMessage(evt);
   };
 
   return (
@@ -115,10 +162,7 @@ export default function MessageInput({
       )}
 
       {/* 💬 Message Input Area */}
-      <Form
-        onSubmit={handleSendMessage}
-        className="d-flex align-items-center gap-2"
-      >
+      <Form onSubmit={onSubmit} className="d-flex align-items-center gap-2">
         {/* 📎 Attachment Button */}
         <div className="position-relative">
           <Button
@@ -143,8 +187,9 @@ export default function MessageInput({
 
         <Form.Control
           value={message}
-          onChange={(e) => setMessage(e.target.value)}
+          // onChange={(e) => setMessage(e.target.value)}
           placeholder="Type a message..."
+          onChange={handleChange}
         />
 
         {/* 😀 Emoji Button */}

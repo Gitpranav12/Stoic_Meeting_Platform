@@ -3,6 +3,8 @@ import { Outlet, useLocation } from "react-router-dom";
 import Sidebar from "../common/Sidebar";
 import TopNavbar from "../common/TopNavbar";
 
+import { connectSocket } from "../api/socket";
+
 export default function AppLayout() {
   const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 1024);
@@ -30,6 +32,21 @@ export default function AppLayout() {
   };
 
   const active = getActiveTab();
+
+  useEffect(() => {
+    // connect socket once (if token exists)
+    const token = localStorage.getItem("authToken");
+    if (token) {
+      const socket = connectSocket();
+      socket.on("auth:ok", () => {
+        // optional: console.log('socket auth ok');
+      });
+      socket.on("user:online", (data) => {
+        // optional: handle presence globally
+      });
+    }
+    // no cleanup here: keep socket for app lifetime
+  }, []);
 
   return (
     <div className="bg-light min-vh-100 d-flex">

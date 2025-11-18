@@ -10,7 +10,9 @@ export default function ChatWindow({
   isTyping,
   handleSendMessage,
   onBack,
-   isMobile
+  isMobile,
+  isOnline = false,
+  lastSeen = null,
 }) {
   return (
     <div
@@ -25,7 +27,13 @@ export default function ChatWindow({
         className="position-sticky top-0 bg-white border-bottom"
         style={{ zIndex: 10 }}
       >
-        <ChatHeader currentChat={currentChat} onBack={onBack}  isMobile={isMobile} />
+        <ChatHeader
+          currentChat={currentChat}
+          onBack={onBack}
+          isMobile={isMobile}
+          lastSeen={lastSeen}
+          isOnline={isOnline}
+        />
       </div>
 
       {/* ✅ Scrollable Message List */}
@@ -45,6 +53,7 @@ export default function ChatWindow({
         style={{ zIndex: 10 }}
       >
         <MessageInput
+          currentChat={currentChat}
           message={message}
           setMessage={setMessage}
           handleSendMessage={handleSendMessage}

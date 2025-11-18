@@ -1,7 +1,24 @@
+// src/pages/chatTab/ChatWindow/IncomingMessage.jsx
 import React from "react";
 import { motion } from "framer-motion";
 
 export default function IncomingMessage({ msg, index }) {
+  // make sure we have a display name
+  const displayName = msg?.user || msg?.senderName || "Unknown";
+  // compute initials safely
+  const initials = displayName
+    .split(" ")
+    .filter(Boolean)
+    .map((n) => n[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+
+  const text = msg?.text ?? msg?.content ?? "";
+  const time =
+    msg?.time ||
+    (msg?.createdAt ? new Date(msg.createdAt).toLocaleTimeString() : "");
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -20,16 +37,13 @@ export default function IncomingMessage({ msg, index }) {
           marginTop: "4px",
         }}
       >
-        {msg.user
-          .split(" ")
-          .map((n) => n[0])
-          .join("")}
+        {initials}
       </div>
 
       {/* RIGHT SIDE: Bubble */}
       <div className="ms-2" style={{ maxWidth: "75%" }}>
         {/* Username */}
-        <small className="text-muted d-block mb-1">{msg.user}</small>
+        <small className="text-muted d-block mb-1">{displayName}</small>
 
         {/* Message bubble */}
         <div
@@ -45,11 +59,11 @@ export default function IncomingMessage({ msg, index }) {
             boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
           }}
         >
-          {msg.text}
+          {text}
         </div>
 
         {/* Time */}
-        <small className="text-muted d-block mt-1">{msg.time}</small>
+        <small className="text-muted d-block mt-1">{time}</small>
       </div>
     </motion.div>
   );
