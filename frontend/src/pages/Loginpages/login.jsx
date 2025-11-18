@@ -18,29 +18,57 @@ function LoginPage() {
     }
   }, [navigate]);
 
-  const handleLogin = (e) => {
-    e.preventDefault();
+const API_URL = "http://localhost:5000/api/auth";
 
-    const storedUser = JSON.parse(localStorage.getItem("stoicUser"));
+const handleLogin = async (e) => {
+  e.preventDefault();
 
-    if (!storedUser) {
-      alert("No account found. Please sign up first!");
+  try {
+    const response = await fetch(`${API_URL}/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      alert(data.message || "Login failed");
       return;
     }
 
-    if (email === storedUser.email && password === storedUser.password) {
-      localStorage.setItem("loggedInUser", JSON.stringify(storedUser)); // ✅ Save session
-      navigate("/dashboard"); // ✅ Direct redirect to dashboard
-    } else {
-      alert("Invalid email or password");
-    }
-  };
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("loggedInUser", JSON.stringify(data.user));
 
-  const handleGoogleSuccess = (response) => {
-    const userInfo = jwtDecode(response.credential);
-    localStorage.setItem("loggedInUser", JSON.stringify(userInfo));
-    navigate("/dashboard"); // ✅ Redirect after Google login
-  };
+    navigate("/dashboard");
+  } catch (error) {
+    alert("Server error, try again!");
+  }
+};
+
+
+const handleGoogleSuccess = async (response) => {
+  try {
+    const res = await fetch(`${API_URL}/google-login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ credential: response.credential }),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("loggedInUser", JSON.stringify(data.user));
+      navigate("/dashboard");
+    } else {
+      alert(data.message || "Google Login Failed");
+    }
+  } catch (error) {
+    alert("Server error, try again!");
+  }
+};
+
 
   const handleGoogleError = () => alert("Google Sign-In Failed");
 
@@ -207,13 +235,13 @@ function LoginPage() {
               </div>
 
               <div className="text-end mb-3">
-                <a
-                  href="#"
-                  className="text-decoration-none small"
-                  style={{ color: "#2563eb", fontWeight: "500" }}
+                  <Link
+                  to="/forgot"
+                  className="fw-semibold text-decoration-none"
+                  style={{ color: "#2563eb" }}
                 >
                   Forgot password?
-                </a>
+                </Link>
               </div>
 
               <button

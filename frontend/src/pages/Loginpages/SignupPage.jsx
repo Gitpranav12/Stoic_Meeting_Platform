@@ -13,7 +13,9 @@ function SignupPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [user, setUser] = useState(null);
 
- const handleSignup = (e) => {
+const API_URL = "http://localhost:5000/api/auth";
+
+const handleSignup = async (e) => {
   e.preventDefault();
 
   if (password !== confirmPassword) {
@@ -21,17 +23,27 @@ function SignupPage() {
     return;
   }
 
-  // ✅ Save user data to localStorage
-  const newUser = { fullName, email, password };
-  localStorage.setItem("stoicUser", JSON.stringify(newUser));
+  try {
+    const response = await fetch(`${API_URL}/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ fullName, email, password }),
+    });
 
-  alert(`Account created successfully for ${fullName}!`);
+    const data = await response.json();
 
-  // ✅ Redirect to Login page after saving
-  setTimeout(() => {
-    navigate("/"); // goes to LoginPage
-  }, 1000);
+    if (!response.ok) {
+      alert(data.message || "Signup failed");
+      return;
+    }
+
+    alert("Account created successfully!");
+    navigate("/");
+  } catch (error) {
+    alert("Server error, try again!");
+  }
 };
+
 
 
   const handleGoogleSuccess = (response) => {

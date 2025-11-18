@@ -9,6 +9,8 @@ import MeetingEndPage from "./pages/MeetingEndPage/MeetingEndPage";
 import ProfileSettings from "./pages/profile/ProfileSettings";
 import MeetingRoom from "./pages/MeetingRoom/MeetingRoom";
 import AppLayout from "./layout/AppLayout";
+import ForgotPassword from "./pages/Loginpages/ForgotPassword";
+
 
 export default function App() {
   return (
@@ -20,6 +22,8 @@ export default function App() {
           <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignupPage />} />
+          <Route path="/forgot" element={<ForgotPassword />} />
+
 
           {/* Layout Pages */}
           <Route element={<AppLayout />}>
