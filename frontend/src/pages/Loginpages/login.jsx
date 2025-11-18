@@ -47,25 +47,34 @@ const handleLogin = async (e) => {
 };
 
 
-const handleGoogleSuccess = async (response) => {
+const handleGoogleSuccess = async (credentialResponse) => {
+  const token = credentialResponse?.credential;
+
+  if (!token) {
+    alert("Google token missing!");
+    return;
+  }
+
   try {
     const res = await fetch(`${API_URL}/google-login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ credential: response.credential }),
+      body: JSON.stringify({ token }),
     });
 
     const data = await res.json();
 
-    if (res.ok) {
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("loggedInUser", JSON.stringify(data.user));
-      navigate("/dashboard");
-    } else {
-      alert(data.message || "Google Login Failed");
+    if (!res.ok) {
+      alert(data.message || "Google Login Error");
+      return;
     }
+
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("loggedInUser", JSON.stringify(data.user));
+
+    navigate("/dashboard");
   } catch (error) {
-    alert("Server error, try again!");
+    alert("Server error!");
   }
 };
 

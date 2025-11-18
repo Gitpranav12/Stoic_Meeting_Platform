@@ -23,7 +23,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 // ⚠️ Replace this with your actual Google Client ID
-const clientId = "129060944473-8o066iqi2jntlt7r04bulu54vpvsa6kq.apps.googleusercontent.com";
+const clientId = "558874872660-l1ectrrrh9c2ksk6s8dcvek0eh63jvv6.apps.googleusercontent.com";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
