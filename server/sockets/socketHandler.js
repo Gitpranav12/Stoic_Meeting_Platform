@@ -7,7 +7,7 @@ module.exports = (io) => {
   const onlineUsers = new Map(); // userId -> socket.id(s)
 
   io.on('connection', (socket) => {
-    console.log('Socket connected', socket.id);
+    //console.log('Socket connected', socket.id);
 
     let currentUserId = null;
 
@@ -29,7 +29,7 @@ module.exports = (io) => {
         io.emit('user:online', { userId: currentUserId });
         socket.emit('auth:ok', { userId: currentUserId });
       } catch (err) {
-        console.log('Socket auth failed', err.message);
+        //console.log('Socket auth failed', err.message);
         socket.emit('auth:error', { message: 'Invalid token' });
         socket.disconnect(true);
       }
@@ -73,7 +73,7 @@ module.exports = (io) => {
           }
         }
       }
-      console.log('Socket disconnected', socket.id);
+    //  console.log('Socket disconnected', socket.id);
     });
 
   });
