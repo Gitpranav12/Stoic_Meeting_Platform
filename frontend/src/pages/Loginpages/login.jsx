@@ -37,7 +37,7 @@ const handleLogin = async (e) => {
       return;
     }
 
-    localStorage.setItem("token", data.token);
+    localStorage.setItem("authToken", data.token);
     localStorage.setItem("loggedInUser", JSON.stringify(data.user));
 
     navigate("/dashboard");
@@ -69,7 +69,7 @@ const handleGoogleSuccess = async (credentialResponse) => {
       return;
     }
 
-    localStorage.setItem("token", data.token);
+    localStorage.setItem("authToken", data.token);
     localStorage.setItem("loggedInUser", JSON.stringify(data.user));
 
     navigate("/dashboard");
