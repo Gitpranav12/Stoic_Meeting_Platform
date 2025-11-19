@@ -1,8 +1,10 @@
 import React, { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom"; // Added Import
 import SettingsControlBar from "./Pages/SettingsControlBar";
-import { MicOff, Hand } from "lucide-react";
+import { MicOff, Hand, Send, Smile } from "lucide-react";
 
 const MeetingRoom = () => {
+  const navigate = useNavigate(); // Added Hook
   const [isCameraOn, setIsCameraOn] = useState(false);
   const [isMicOn, setIsMicOn] = useState(false);
   const [isScreenSharing, setIsScreenSharing] = useState(false);
@@ -80,10 +82,8 @@ const MeetingRoom = () => {
 
     const newReaction = { id, emoji, left, top };
     setFloatingReactions((prev) => [...prev, newReaction]);
-
     // hide picker after selection
     setShowReactionPicker(false);
-
     // remove after 2s
     setTimeout(() => {
       setFloatingReactions((prev) => prev.filter((r) => r.id !== id));
@@ -97,12 +97,23 @@ const MeetingRoom = () => {
     >
       {/* Inline keyframes and small helper styles */}
       <style>{`
+      * {
+          font-family: "Inter", "Segoe UI", Arial, sans-serif !important;
+        }
+
         @keyframes floatUp {
           0% { transform: translateY(0) scale(1); opacity: 1; }
           100% { transform: translateY(-80px) scale(1.2); opacity: 0; }
         }
         @keyframes fadeOut3 {
           0% { opacity: 1; } 90% { opacity: 1; } 100% { opacity: 0; }
+        }
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .chat-panel-anim {
+            animation: slideInRight 0.3s ease-out forwards;
         }
         .reaction-picker {
           position: fixed;
@@ -133,13 +144,32 @@ const MeetingRoom = () => {
           animation: floatUp 2s forwards;
           text-shadow: 0 4px 10px rgba(0,0,0,0.4);
         }
+        /* Chat Scrollbar Customization */
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background-color: #1f2a44;
+          border-radius: 4px;
+        }
+        /* FORCE REMOVE BORDER FROM INPUT */
+        .custom-chat-input {
+            border: none !important;
+            box-shadow: none !important;
+            outline: none !important;
+        }
+        .custom-chat-input:focus {
+            border: none !important;
+            box-shadow: none !important;
+            outline: none !important;
+        }
       `}</style>
 
       {/* Header */}
       <div
         className="d-flex justify-content-between align-items-center px-4 py-3"
         style={{
-          background: "#0f1a33",
+          background: "#131a27ff",
           color: "#fff",
           borderBottom: "1px solid #1f2a44",
         }}
@@ -149,7 +179,7 @@ const MeetingRoom = () => {
           <small>Meeting ID: 123-456-789</small>
         </div>
 
-        <div className="d-flex align-items-center gap-4">
+        {/* <div className="d-flex align-items-center gap-4">
           <div
             className="px-3 py-1 rounded-pill"
             style={{
@@ -159,18 +189,17 @@ const MeetingRoom = () => {
             }}
           >
             ● 2m 54s
-          </div>
+          </div> */}
 
-          <div
-            className="px-3 py-1 rounded-pill"
-            style={{ background: "#1a253d" }}
-          >
-            👥 7
-          </div>
+        <div
+          className="px-3 py-1 rounded-pill"
+          style={{ background: "#1a253d" }}
+        >
+          👥 7
         </div>
+        {/* </div> */}
       </div>
 
-      {/* Main section */}
       {/* Main section */}
       <div
         className="row m-0"
@@ -206,7 +235,7 @@ const MeetingRoom = () => {
                     {...tileRefProps}
                     className="rounded position-relative"
                     style={{
-                      background: "linear-gradient(180deg, #122033, #0c1525)",
+                      background: "linear-gradient(180deg, #243348, #141e2a)",
                       border:
                         user.initial === "V"
                           ? "2px solid #3effad"
@@ -329,12 +358,12 @@ const MeetingRoom = () => {
           </div>
         </div>
 
-        {/* Chat Panel - fully removed when hidden */}
+        {/* Chat Panel - Updated UI */}
         {showChatPanel && (
           <div
-            className="col-md-3 p-4"
+            className="col-md-3 chat-panel-anim p-2"
             style={{
-              background: "#0b1320",
+              background: "#0e1623",
               borderLeft: "1px solid #1f2a44",
               color: "#fff",
               display: "flex",
@@ -343,39 +372,107 @@ const MeetingRoom = () => {
               paddingBottom: "0",
             }}
           >
-            <h6 className="fw-bold">Live Chat</h6>
+            {/* Chat Header */}
+            <div
+              className="p-1 border-bottom"
+              style={{ borderColor: "#1f2a44" }}
+            >
+              <h5 className="fw-bold m-0">Live Chat</h5>
+            </div>
 
-            <div className="mt-3" style={{ height: "70%", overflowY: "auto" }}>
-              <div className="mb-3">
-                <strong>Sarah</strong>
-                <div className="text-muted">Hey everyone!</div>
-                <small>10:00 AM</small>
+            {/* Messages Area */}
+            <div
+              className="flex-grow-1 p-3 custom-scrollbar"
+              style={{ overflowY: "auto" }}
+            >
+              {/* Message 1 */}
+              <div
+                className="mb-3 p-3 rounded"
+                style={{ background: "#1b263b" }}
+              >
+                <div className="d-flex justify-content-between align-items-center mb-1">
+                  <strong style={{ color: "#3b82f6", fontSize: "14px" }}>
+                    Sarah
+                  </strong>
+                  <small
+                    className="text-white-50 "
+                    style={{ fontSize: "11px" }}
+                  >
+                    10:00 AM
+                  </small>
+                </div>
+                <div className="text-white-50" style={{ fontSize: "16px" }}>
+                  Hey everyone!
+                </div>
               </div>
 
-              <div className="mb-3">
-                <strong>Mike</strong>
-                <div className="text-muted">Good morning team</div>
-                <small>10:01 AM</small>
+              {/* Message 2 */}
+              <div
+                className="mb-3 p-3 rounded"
+                style={{ background: "#1b263b" }}
+              >
+                <div className="d-flex justify-content-between align-items-center mb-1">
+                  <strong style={{ color: "#3b82f6", fontSize: "14px" }}>
+                    Mike
+                  </strong>
+                  <small className="text-white-50" style={{ fontSize: "11px" }}>
+                    10:01 AM
+                  </small>
+                </div>
+                <div className="text-white-50" style={{ fontSize: "16px" }}>
+                  Good morning team
+                </div>
               </div>
 
-              <div className="mb-3">
-                <strong>You</strong>
-                <div className="text-muted">Ready to start?</div>
-                <small>10:02 AM</small>
+              {/* Message 3 (Self) */}
+              <div
+                className="mb-3 p-3 rounded"
+                style={{ background: "#1b263b" }}
+              >
+                <div className="d-flex justify-content-between align-items-center mb-1">
+                  <strong style={{ color: "#fff", fontSize: "14px" }}>
+                    You
+                  </strong>
+                  <small className="text-white-50" style={{ fontSize: "11px" }}>
+                    10:02 AM
+                  </small>
+                </div>
+                <div className="text-white-50" style={{ fontSize: "16px" }}>
+                  Ready to start?
+                </div>
               </div>
             </div>
 
-            <div className="d-flex gap-2 mt-3">
-              <input
-                className="form-control"
-                placeholder="Type a message..."
-                style={{
-                  background: "#0a1320",
-                  color: "#fff",
-                  border: "1px solid #1f2a44",
-                }}
-              />
-              <button className="btn btn-primary">➤</button>
+            {/* Input Area - Fixed at Bottom */}
+            <div
+              className="p-2 mb-3"
+              style={{ background: "#0b1320", borderTop: "1px solid #1f2a44" }}
+            >
+              <div className="d-flex gap-3 align-items-center">
+                <div className="flex-grow-1">
+                  <input
+                    className="form-control border-0 text-white custom-chat-input"
+                    placeholder="Type a message..."
+                    style={{
+                      background: "#1b263b",
+                      boxShadow: "none",
+                      padding: "10px 15px",
+                      borderRadius: "8px",
+                    }}
+                  />
+                </div>
+                {/* Icons */}
+                <Smile
+                  size={22}
+                  className="text-white-50"
+                  style={{ cursor: "pointer" }}
+                />
+                <Send
+                  size={22}
+                  className="text-white"
+                  style={{ cursor: "pointer" }}
+                />
+              </div>
             </div>
           </div>
         )}
@@ -392,12 +489,12 @@ const MeetingRoom = () => {
         onHandRaise={() => {
           handleHandRaise();
           setHandRaised(true);
-          // automatically clear the tile badge after 5s
           setTimeout(() => setHandRaised(false), 5000);
         }}
         onReaction={handleOpenReactionPicker}
         onGrid={handleGridPopup}
         onChat={() => setShowChatPanel((prev) => !prev)}
+        onEndCall={() => navigate("/meeting-ended")} // Added End Call Navigation
       />
 
       {/* Reaction picker near bottom center */}
