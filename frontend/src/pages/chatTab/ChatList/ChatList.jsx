@@ -6,6 +6,8 @@ import PrivateChats from "./PrivateChats";
 import "../TabCss/NavTabsStyle.css";
 
 export default function ChatList({
+  activeTab = "groups",
+  setActiveTab = () => {},
   selectedChat,
   setSelectedChat,
   groupChats,
@@ -26,7 +28,7 @@ export default function ChatList({
         borderRight: isMobile ? "none" : "1px solid #dee2e6", // cleaner look
       }}
     >
-      <Tab.Container defaultActiveKey="groups">
+      <Tab.Container activeKey={activeTab} onSelect={(k) => setActiveTab(k)}>
         <Nav
           variant="tabs"
           className="px-3 py-3 nav-tabs-c"

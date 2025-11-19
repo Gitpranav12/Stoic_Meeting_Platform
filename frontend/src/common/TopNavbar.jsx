@@ -110,12 +110,15 @@ export default function TopNavbar({ active = "dashboard", onMenuClick }) {
         return;
       }
       await openPrivateChat(userId);
+
+      // navigate to chat page IMMEDIATELY
+      navigate("/dashboard/chat");
+
+      // refresh chat list and auto-select the stored chat id
+      if (window.__refreshChats) window.__refreshChats();
+
       setShowDropdown(false);
       setQuery("");
-      // ensure ChatDashboard shows the chat (refreshChats will auto-select)
-      if (window.__refreshChats) window.__refreshChats();
-      // optionally navigate to chat route if you have one
-      // navigate('/dashboard/chat');
     } catch (err) {
       console.error(err);
       alert(
@@ -124,19 +127,83 @@ export default function TopNavbar({ active = "dashboard", onMenuClick }) {
     }
   };
 
-  // click message result -> open that chat
-  const handleMessageClick = (msg) => {
-    const chatId =
-      (msg.chatId && (msg.chatId._id || msg.chatId)) || msg.chat || msg.room;
-    if (!chatId) {
-      alert("Chat id not available for this message");
+  // // click message result -> open that chat
+  // const handleMessageClick = (msg) => {
+  //   const chatId =
+  //     (msg.chatId && (msg.chatId._id || msg.chatId)) || msg.chat || msg.room;
+  //   if (!chatId) {
+  //     alert("Chat id not available for this message");
+  //     return;
+  //   }
+  //   localStorage.setItem("stoic_select_chat", String(chatId));
+  //   if (window.__refreshChats) window.__refreshChats();
+  //   setShowDropdown(false);
+  //   setQuery("");
+  // };
+
+  // robust extractor + opener for message search clicks
+const getChatIdFromMessage = (m) => {
+  if (!m) return null;
+
+  // common variations: m.chatId (string), m.chatId._id (object), m.chat (object/string), m.room
+  const cid =
+    (m.chatId && (m.chatId._id || m.chatId)) ||
+    (m.chat && (m.chat._id || m.chat)) ||
+    m.room ||
+    null;
+
+  // If it's an object and has _id, return _id
+  if (typeof cid === "object" && cid !== null) {
+    return cid._id || cid.id || null;
+  }
+  return cid ? String(cid) : null;
+};
+
+const handleMessageClick = async (m) => {
+  try {
+    const chatId = getChatIdFromMessage(m);
+
+    if (chatId) {
+      // store + refresh + event + navigate (same pattern as openPrivateChat)
+      localStorage.setItem("stoic_select_chat", String(chatId));
+      if (window.__refreshChats) window.__refreshChats();
+
+      // dispatch openChat event so mounted ChatDashboard will react immediately
+      try {
+        window.dispatchEvent(new CustomEvent("openChat", { detail: { chatId: String(chatId) } }));
+      } catch (e) {
+        const ev = document.createEvent("CustomEvent");
+        ev.initCustomEvent("openChat", true, true, { chatId: String(chatId) });
+        window.dispatchEvent(ev);
+      }
+
+      // ensure the dashboard route is visible
+      navigate("/dashboard/chat");
+
+      // close dropdown + clear query
+      setShowDropdown(false);
+      setQuery("");
       return;
     }
-    localStorage.setItem("stoic_select_chat", String(chatId));
-    if (window.__refreshChats) window.__refreshChats();
-    setShowDropdown(false);
-    setQuery("");
-  };
+
+    // fallback: maybe message only has sender id; try opening a private chat with sender
+    const senderId = (m.sender && (m.sender._id || m.sender)) || m.senderId || m.from || null;
+    if (senderId) {
+      // open or create private chat with message sender
+      await openPrivateChat(senderId._id ? senderId._id : senderId);
+      navigate("/dashboard/chat");
+      setShowDropdown(false);
+      setQuery("");
+      return;
+    }
+
+    alert("Could not locate chat for this message.");
+  } catch (err) {
+    console.error("handleMessageClick error:", err);
+    alert("Failed to open chat for message: " + (err?.message || err));
+  }
+};
+
 
   const onKeyDown = (e) => {
     if (e.key === "Escape") {

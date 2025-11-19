@@ -20,6 +20,7 @@ export default function ChatDashboard() {
   const [isTyping, setIsTyping] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
   const [showChatWindow, setShowChatWindow] = useState(false);
+  const [chatListTab, setChatListTab] = useState("groups"); // 'groups' | 'private'
 
   const [groupChats, setGroupChats] = useState([]);
   const [privateChats, setPrivateChats] = useState([]);
@@ -133,6 +134,141 @@ export default function ChatDashboard() {
     };
   }, []); // run once on mount
 
+  // inside ChatDashboard component, add this effect
+  // useEffect(
+  //   () => {
+  //     const handler = (e) => {
+  //       try {
+  //         const chatId = (e && e.detail && e.detail.chatId) || e;
+  //         if (!chatId) return;
+  //         // make sure chats are refreshed first, then open
+  //         // small timeout gives refreshChats() a chance to complete
+  //         setTimeout(() => {
+  //           handleSelectChat(chatId);
+  //           // show chat window on mobile
+  //           if (window.innerWidth <= 1024) {
+  //             setShowChatWindow(true);
+  //           }
+  //         }, 200); // 200ms is small but should be enough; increase if needed
+  //       } catch (err) {
+  //         console.error("openChat handler error", err);
+  //       }
+  //     };
+
+  //     window.addEventListener("openChat", handler);
+
+  //     return () => {
+  //       window.removeEventListener("openChat", handler);
+  //     };
+  //   },
+  //   [
+  //     /* no deps: want single listener registered on mount */
+  //   ]
+  // );
+
+  useEffect(() => {
+    const handler = (e) => {
+      try {
+        const chatId = (e && e.detail && e.detail.chatId) || e;
+        if (!chatId) return;
+        // try to find in existing lists
+        const foundGroup = groupChats.find(
+          (g) => String(g.id) === String(chatId)
+        );
+        const foundPrivate = privateChats.find(
+          (p) => String(p.id) === String(chatId)
+        );
+        if (foundGroup) setChatListTab("groups");
+        else if (foundPrivate) setChatListTab("private");
+        // show chat window on mobile
+        if (window.innerWidth <= 1024) {
+          setShowChatWindow(true);
+        }
+        // select chat
+        setTimeout(() => handleSelectChat(chatId), 50);
+      } catch (err) {
+        console.error("openChat handler error", err);
+      }
+    };
+
+    window.addEventListener("openChat", handler);
+    return () => window.removeEventListener("openChat", handler);
+  }, [groupChats, privateChats]); // depend on lists so it can decide tab if lists change
+
+  // helper: fetch chats and split into group/private arrays, normalizing
+  // const refreshChats = async () => {
+  //   try {
+  //     const chats = await chatService.listChats();
+  //     // normalize into UI-friendly objects
+  //     const groups = [];
+  //     const privates = [];
+  //     const currentUserId = JSON.parse(
+  //       localStorage.getItem("loggedInUser")
+  //     )?._id;
+
+  //     (chats || []).forEach((c) => {
+  //       const id = c._id || c.id || "";
+  //       const type = c.type || "private";
+  //       // lastMessage may be populated as object (lastMessageId) or null
+  //       const lastMsg = c.lastMessageId
+  //         ? c.lastMessageId.content || c.lastMessageId
+  //         : "";
+  //       const time = c.lastMessageId
+  //         ? new Date(c.lastMessageId.createdAt).toLocaleTimeString()
+  //         : "";
+  //       const unread = c.unread || 0;
+
+  //       let name = c.name || null;
+
+  //       if (!name) {
+  //         if (type === "private") {
+  //           // try to find the other participant and get their display name
+  //           const other = (c.participants || []).find((p) => {
+  //             const pid = typeof p === "object" ? p._id || p.id : p;
+  //             return String(pid) !== String(currentUserId);
+  //           });
+  //           const disp = participantDisplay(other);
+  //           name =
+  //             disp ||
+  //             (other && typeof other === "string"
+  //               ? `User ${String(other).slice(0, 6)}`
+  //               : "Chat");
+  //         } else if (type === "group") {
+  //           // for groups without name, make a fallback from participants
+  //           const names = (c.participants || [])
+  //             .map(participantDisplay)
+  //             .filter(Boolean)
+  //             .slice(0, 3);
+  //           name = names.length ? names.join(", ") : "Group";
+  //         }
+  //       }
+
+  //       const item = {
+  //         id,
+  //         name,
+  //         lastMessage: lastMsg,
+  //         time,
+  //         unread,
+  //         raw: c,
+  //       };
+
+  //       if (type === "group") groups.push(item);
+  //       else privates.push(item);
+  //     });
+
+  //     setGroupChats(groups);
+  //     setPrivateChats(privates);
+
+  //     // ensure a selectedChat exists
+  //     if (!selectedChat) {
+  //       const pick = groups[0] || privates[0];
+  //       if (pick) handleSelectChat(pick.id);
+  //     }
+  //   } catch (err) {
+  //     console.error("Failed to load chats", err);
+  //   }
+  // };
+
   // helper: fetch chats and split into group/private arrays, normalizing
   const refreshChats = async () => {
     try {
@@ -194,10 +330,35 @@ export default function ChatDashboard() {
         else privates.push(item);
       });
 
+      // update state
       setGroupChats(groups);
       setPrivateChats(privates);
 
-      // ensure a selectedChat exists
+      // If there is a pending chat id (from search/create), auto-select & set tab
+      const pending = localStorage.getItem("stoic_select_chat");
+      if (pending) {
+        // remove it so it doesn't trigger repeatedly
+        localStorage.removeItem("stoic_select_chat");
+
+        // decide which tab contains this chat
+        const inGroups = groups.find((g) => String(g.id) === String(pending));
+        const inPrivates = privates.find(
+          (p) => String(p.id) === String(pending)
+        );
+
+        if (inGroups) {
+          setChatListTab("groups");
+        } else if (inPrivates) {
+          setChatListTab("private");
+        }
+
+        // now select the chat (will load messages)
+        // slight delay to ensure UI updates; but handleSelectChat handles string IDs as well
+        setTimeout(() => handleSelectChat(pending), 50);
+        return;
+      }
+
+      // if no pending selection and nothing selected yet, pick first available
       if (!selectedChat) {
         const pick = groups[0] || privates[0];
         if (pick) handleSelectChat(pick.id);
@@ -311,6 +472,8 @@ export default function ChatDashboard() {
           />
         ) : (
           <ChatList
+            activeTab={chatListTab}
+            setActiveTab={setChatListTab}
             selectedChat={selectedChat?._id || selectedChat}
             setSelectedChat={handleSelectChat}
             groupChats={groupChats}
@@ -320,6 +483,8 @@ export default function ChatDashboard() {
       ) : (
         <>
           <ChatList
+            activeTab={chatListTab}
+            setActiveTab={setChatListTab}
             selectedChat={selectedChat?._id || selectedChat}
             setSelectedChat={handleSelectChat}
             groupChats={groupChats}
