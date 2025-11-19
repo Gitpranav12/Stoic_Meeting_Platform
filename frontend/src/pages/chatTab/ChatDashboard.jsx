@@ -134,38 +134,6 @@ export default function ChatDashboard() {
     };
   }, []); // run once on mount
 
-  // inside ChatDashboard component, add this effect
-  // useEffect(
-  //   () => {
-  //     const handler = (e) => {
-  //       try {
-  //         const chatId = (e && e.detail && e.detail.chatId) || e;
-  //         if (!chatId) return;
-  //         // make sure chats are refreshed first, then open
-  //         // small timeout gives refreshChats() a chance to complete
-  //         setTimeout(() => {
-  //           handleSelectChat(chatId);
-  //           // show chat window on mobile
-  //           if (window.innerWidth <= 1024) {
-  //             setShowChatWindow(true);
-  //           }
-  //         }, 200); // 200ms is small but should be enough; increase if needed
-  //       } catch (err) {
-  //         console.error("openChat handler error", err);
-  //       }
-  //     };
-
-  //     window.addEventListener("openChat", handler);
-
-  //     return () => {
-  //       window.removeEventListener("openChat", handler);
-  //     };
-  //   },
-  //   [
-  //     /* no deps: want single listener registered on mount */
-  //   ]
-  // );
-
   useEffect(() => {
     const handler = (e) => {
       try {
@@ -196,80 +164,6 @@ export default function ChatDashboard() {
   }, [groupChats, privateChats]); // depend on lists so it can decide tab if lists change
 
   // helper: fetch chats and split into group/private arrays, normalizing
-  // const refreshChats = async () => {
-  //   try {
-  //     const chats = await chatService.listChats();
-  //     // normalize into UI-friendly objects
-  //     const groups = [];
-  //     const privates = [];
-  //     const currentUserId = JSON.parse(
-  //       localStorage.getItem("loggedInUser")
-  //     )?._id;
-
-  //     (chats || []).forEach((c) => {
-  //       const id = c._id || c.id || "";
-  //       const type = c.type || "private";
-  //       // lastMessage may be populated as object (lastMessageId) or null
-  //       const lastMsg = c.lastMessageId
-  //         ? c.lastMessageId.content || c.lastMessageId
-  //         : "";
-  //       const time = c.lastMessageId
-  //         ? new Date(c.lastMessageId.createdAt).toLocaleTimeString()
-  //         : "";
-  //       const unread = c.unread || 0;
-
-  //       let name = c.name || null;
-
-  //       if (!name) {
-  //         if (type === "private") {
-  //           // try to find the other participant and get their display name
-  //           const other = (c.participants || []).find((p) => {
-  //             const pid = typeof p === "object" ? p._id || p.id : p;
-  //             return String(pid) !== String(currentUserId);
-  //           });
-  //           const disp = participantDisplay(other);
-  //           name =
-  //             disp ||
-  //             (other && typeof other === "string"
-  //               ? `User ${String(other).slice(0, 6)}`
-  //               : "Chat");
-  //         } else if (type === "group") {
-  //           // for groups without name, make a fallback from participants
-  //           const names = (c.participants || [])
-  //             .map(participantDisplay)
-  //             .filter(Boolean)
-  //             .slice(0, 3);
-  //           name = names.length ? names.join(", ") : "Group";
-  //         }
-  //       }
-
-  //       const item = {
-  //         id,
-  //         name,
-  //         lastMessage: lastMsg,
-  //         time,
-  //         unread,
-  //         raw: c,
-  //       };
-
-  //       if (type === "group") groups.push(item);
-  //       else privates.push(item);
-  //     });
-
-  //     setGroupChats(groups);
-  //     setPrivateChats(privates);
-
-  //     // ensure a selectedChat exists
-  //     if (!selectedChat) {
-  //       const pick = groups[0] || privates[0];
-  //       if (pick) handleSelectChat(pick.id);
-  //     }
-  //   } catch (err) {
-  //     console.error("Failed to load chats", err);
-  //   }
-  // };
-
-  // helper: fetch chats and split into group/private arrays, normalizing
   const refreshChats = async () => {
     try {
       const chats = await chatService.listChats();
@@ -287,8 +181,13 @@ export default function ChatDashboard() {
         const lastMsg = c.lastMessageId
           ? c.lastMessageId.content || c.lastMessageId
           : "";
+
         const time = c.lastMessageId
-          ? new Date(c.lastMessageId.createdAt).toLocaleTimeString()
+          ? new Date(c.lastMessageId.createdAt).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: true,
+            })
           : "";
         const unread = c.unread || 0;
 
@@ -518,7 +417,16 @@ const normalizeMessage = (rawMsg) => {
   const text = rawMsg.content ?? rawMsg.text ?? "";
   const createdAt =
     rawMsg.createdAt || rawMsg.created_at || rawMsg.created || null;
-  const time = createdAt ? new Date(createdAt).toLocaleTimeString() : "";
+  //const time = createdAt ? new Date(createdAt).toLocaleTimeString() : "";
+
+  const time = createdAt
+    ? new Date(createdAt).toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      })
+    : "";
+
   // sender could be populated object or id string
   const sender = rawMsg.senderId || rawMsg.sender || rawMsg.from || null;
 

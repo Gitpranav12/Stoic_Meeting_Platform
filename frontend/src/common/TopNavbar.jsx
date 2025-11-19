@@ -1,7 +1,7 @@
 // src/common/TopNavbar.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Search, Bell, Menu } from "lucide-react";
+import { Search, Bell, Menu, X } from "lucide-react";
 import { Button, Form, InputGroup, ListGroup, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { openPrivateChat } from "../api/uiHelpers"; // adjust path if necessary
@@ -142,73 +142,93 @@ export default function TopNavbar({ active = "dashboard", onMenuClick }) {
   // };
 
   // robust extractor + opener for message search clicks
-const getChatIdFromMessage = (m) => {
-  if (!m) return null;
+  const getChatIdFromMessage = (m) => {
+    if (!m) return null;
 
-  // common variations: m.chatId (string), m.chatId._id (object), m.chat (object/string), m.room
-  const cid =
-    (m.chatId && (m.chatId._id || m.chatId)) ||
-    (m.chat && (m.chat._id || m.chat)) ||
-    m.room ||
-    null;
+    // common variations: m.chatId (string), m.chatId._id (object), m.chat (object/string), m.room
+    const cid =
+      (m.chatId && (m.chatId._id || m.chatId)) ||
+      (m.chat && (m.chat._id || m.chat)) ||
+      m.room ||
+      null;
 
-  // If it's an object and has _id, return _id
-  if (typeof cid === "object" && cid !== null) {
-    return cid._id || cid.id || null;
-  }
-  return cid ? String(cid) : null;
-};
+    // If it's an object and has _id, return _id
+    if (typeof cid === "object" && cid !== null) {
+      return cid._id || cid.id || null;
+    }
+    return cid ? String(cid) : null;
+  };
 
-const handleMessageClick = async (m) => {
-  try {
-    const chatId = getChatIdFromMessage(m);
+  const handleMessageClick = async (m) => {
+    try {
+      const chatId = getChatIdFromMessage(m);
 
-    if (chatId) {
-      // store + refresh + event + navigate (same pattern as openPrivateChat)
-      localStorage.setItem("stoic_select_chat", String(chatId));
-      if (window.__refreshChats) window.__refreshChats();
+      if (chatId) {
+        // store + refresh + event + navigate (same pattern as openPrivateChat)
+        localStorage.setItem("stoic_select_chat", String(chatId));
+        if (window.__refreshChats) window.__refreshChats();
 
-      // dispatch openChat event so mounted ChatDashboard will react immediately
-      try {
-        window.dispatchEvent(new CustomEvent("openChat", { detail: { chatId: String(chatId) } }));
-      } catch (e) {
-        const ev = document.createEvent("CustomEvent");
-        ev.initCustomEvent("openChat", true, true, { chatId: String(chatId) });
-        window.dispatchEvent(ev);
+        // dispatch openChat event so mounted ChatDashboard will react immediately
+        try {
+          window.dispatchEvent(
+            new CustomEvent("openChat", { detail: { chatId: String(chatId) } })
+          );
+        } catch (e) {
+          const ev = document.createEvent("CustomEvent");
+          ev.initCustomEvent("openChat", true, true, {
+            chatId: String(chatId),
+          });
+          window.dispatchEvent(ev);
+        }
+
+        // ensure the dashboard route is visible
+        navigate("/dashboard/chat");
+
+        // close dropdown + clear query
+        setShowDropdown(false);
+        setQuery("");
+        return;
       }
 
-      // ensure the dashboard route is visible
-      navigate("/dashboard/chat");
+      // fallback: maybe message only has sender id; try opening a private chat with sender
+      const senderId =
+        (m.sender && (m.sender._id || m.sender)) ||
+        m.senderId ||
+        m.from ||
+        null;
+      if (senderId) {
+        // open or create private chat with message sender
+        await openPrivateChat(senderId._id ? senderId._id : senderId);
+        navigate("/dashboard/chat");
+        setShowDropdown(false);
+        setQuery("");
+        return;
+      }
 
-      // close dropdown + clear query
-      setShowDropdown(false);
-      setQuery("");
-      return;
+      alert("Could not locate chat for this message.");
+    } catch (err) {
+      console.error("handleMessageClick error:", err);
+      alert("Failed to open chat for message: " + (err?.message || err));
     }
-
-    // fallback: maybe message only has sender id; try opening a private chat with sender
-    const senderId = (m.sender && (m.sender._id || m.sender)) || m.senderId || m.from || null;
-    if (senderId) {
-      // open or create private chat with message sender
-      await openPrivateChat(senderId._id ? senderId._id : senderId);
-      navigate("/dashboard/chat");
-      setShowDropdown(false);
-      setQuery("");
-      return;
-    }
-
-    alert("Could not locate chat for this message.");
-  } catch (err) {
-    console.error("handleMessageClick error:", err);
-    alert("Failed to open chat for message: " + (err?.message || err));
-  }
-};
-
+  };
 
   const onKeyDown = (e) => {
     if (e.key === "Escape") {
       setShowDropdown(false);
       inputRef.current?.blur();
+    }
+  };
+
+  // NEW: clear button handler
+  const clearSearch = () => {
+    setQuery("");
+    setResults({ users: [], messages: [] });
+    setShowDropdown(false);
+    // focus back to input
+    if (inputRef.current) {
+      try {
+        inputRef.current.focus();
+      } catch (e) {}
     }
   };
 
@@ -246,9 +266,25 @@ const handleMessageClick = async (m) => {
               aria-label="Search"
               autoComplete="off"
             />
-            {loading && (
+            {/* Right-side adornment: show spinner OR clear button when there is text */}
+            {loading ? (
               <InputGroup.Text style={{ width: 36 }}>
                 <Spinner animation="border" size="sm" />
+              </InputGroup.Text>
+            ) : query ? (
+              <InputGroup.Text
+                role="button"
+                title="Clear search"
+                onClick={clearSearch}
+                style={{ width: 36, cursor: "pointer" }}
+                aria-label="Clear search"
+              >
+                <X size={14} />
+              </InputGroup.Text>
+            ) : (
+              // maintain spacing when neither spinner nor clear shown
+              <InputGroup.Text style={{ width: 36, visibility: "hidden" }}>
+                <X size={14} />
               </InputGroup.Text>
             )}
           </InputGroup>
@@ -258,6 +294,7 @@ const handleMessageClick = async (m) => {
             <SearchDropdown
               loading={loading}
               results={results}
+              query={query}
               onUserClick={handleUserClick}
               onMessageClick={handleMessageClick}
               onClose={() => {
