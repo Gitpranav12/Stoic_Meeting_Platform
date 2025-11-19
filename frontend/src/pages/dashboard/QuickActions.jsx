@@ -38,9 +38,10 @@ export default function QuickActions({
     <div className="row g-4 mb-4">
       {actions.map((action) => (
         <div className="col-md-4" key={action.id}>
-          <Card
+         <Card
             onClick={action.onClick}
-            className="h-100 shadow-sm hover-shadow cursor-pointer card-p"
+            style={{ cursor: "pointer" }}   
+            className="h-100 shadow-sm border-0"
           >
             <Card.Body className="d-flex align-items-center gap-3">
               <div className={`${action.bg} p-3 rounded`}>{action.icon}</div>

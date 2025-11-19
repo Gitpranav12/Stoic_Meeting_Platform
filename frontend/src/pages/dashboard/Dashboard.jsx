@@ -17,6 +17,10 @@ export default function Dashboard() {
 
   const [toastMessage, setToastMessage] = useState(""); // short UI feedback for copy/share
   const [settingsOpen, setSettingsOpen] = useState(false);
+
+   const [showMeetingLinkPopup, setShowMeetingLinkPopup] = useState(false);
+  const [showInstantMeetingUI, setShowInstantMeetingUI] = useState(false);
+
   const videoRef = useRef(null);
   const mediaStreamRef = useRef(null);
 
@@ -211,7 +215,18 @@ export default function Dashboard() {
   const clearToastLater = (ms = 2200) => {
     setTimeout(() => setToastMessage(""), ms);
   };
+ // REQUIRED NEW FUNCTIONS =======================
 
+  // ✔ Create meeting for later → show Google Meet–style popup
+  const handleCreateForLater = () => {
+    setShowMeetingLinkPopup(true);
+  };
+
+  // ✔ Start instant meeting (camera+join UI)
+  const handleInstantMeeting = () => {
+    setShowInstantMeetingUI(true);
+    setIsCameraPreviewOn(true);
+  };
   return (
     <div className="d-flex min-vh-100 bg-light">
       {/* Main Content */}
@@ -263,7 +278,7 @@ export default function Dashboard() {
           stopCameraStream();
           setShowNewMeetingDialog(false);
         }}
-        userName={userName}
+         userName={userName}
         setUserName={setUserName}
         meetingId={meetingId}
         isCameraPreviewOn={isCameraPreviewOn}
@@ -271,13 +286,20 @@ export default function Dashboard() {
         isMicPreviewOn={isMicPreviewOn}
         setIsMicPreviewOn={setIsMicPreviewOn}
         videoRef={videoRef}
+        toastMessage={toastMessage}
+        setToastMessage={setToastMessage}
         copyMeetingLink={copyMeetingLink}
         shareMeetingLink={shareMeetingLink}
-        toastMessage={toastMessage}
         handleJoinMeetingClick={handleJoinMeetingClick}
         settingsOpen={settingsOpen}
         setSettingsOpen={setSettingsOpen}
         SettingsModal={SettingsModal}
+        handleCreateForLater={handleCreateForLater}
+        handleInstantMeeting={handleInstantMeeting}
+        showMeetingLinkPopup={showMeetingLinkPopup}
+        setShowMeetingLinkPopup={setShowMeetingLinkPopup}
+        showInstantMeetingUI={showInstantMeetingUI}
+        setShowInstantMeetingUI={setShowInstantMeetingUI}
       />
     </div>
   );
