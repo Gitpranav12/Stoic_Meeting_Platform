@@ -1,8 +1,48 @@
-import React from "react";
+import React, { useState } from "react";
 import { Form, Button } from "react-bootstrap";
+import api from "../../api/http";
 import "./css/ProfileSettings.css";
+import { Modal } from "react-bootstrap";
 
 export default function SecurityTab() {
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [modalShow, setModalShow] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const passwordRegex =
+    /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+  const handleChangePassword = async () => {
+    if (!passwordRegex.test(newPassword)) {
+      setModalMessage(
+        "Password must be at least 8 chars, include uppercase, lowercase, number, and special character."
+      );
+      return setModalShow(true);
+    }
+    if (newPassword !== confirmPassword) {
+      setModalMessage("New Password and Confirm Password do not match");
+      return setModalShow(true);
+    }
+    try {
+      await api.put("/api/profile/change-password",
+        { currentPassword, newPassword }
+      );
+      setModalMessage("Password updated");
+      setModalShow(true);
+      setCurrentPassword(""); setNewPassword(""); setConfirmPassword("");
+    } catch (err) {
+      setModalMessage(err?.response?.data?.error || "Update failed");
+      setModalShow(true);
+    }
+  };
+
+  const handleCancel = () => {
+    setCurrentPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
+  };
+
   return (
     <div className="security-container">
       <div className="border-0">
@@ -26,6 +66,8 @@ export default function SecurityTab() {
                   type="password"
                   placeholder="Enter current password"
                   className="border-0 bg-light"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
                 />
               </div>
             </Form.Group>
@@ -46,6 +88,8 @@ export default function SecurityTab() {
                   type="password"
                   placeholder="Enter new password"
                   className="border-0 bg-light"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
                 />
               </div>
             </Form.Group>
@@ -66,12 +110,17 @@ export default function SecurityTab() {
                   type="password"
                   placeholder="Confirm new password"
                   className="border-0 bg-light"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                 />
               </div>
             </Form.Group>
 
-            <Button type="button" className="px-4 py-2 fw-semibold btn btn-primary">
+            <Button type="button" className="px-4 py-2 fw-semibold btn btn-primary" onClick={handleChangePassword}>
               Update Password
+            </Button>
+            <Button variant="outline-secondary" className="px-4 py-2 fw-semibold btn mx-2 my-1" onClick={handleCancel}>
+              Cancel
             </Button>
           </Form>
 
@@ -100,6 +149,33 @@ export default function SecurityTab() {
           </div>
         </div>
       </div>
+      <Modal
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+        centered
+        backdrop="static"
+        keyboard={false}
+      >
+        <Modal.Header closeButton className="border-0 pb-0">
+          <Modal.Title className="fw-bold text-primary d-flex align-items-center gap-2">
+            <i className="bi bi-info-circle-fill"></i> Notification
+          </Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body className="fs-6 text-secondary">
+          {modalMessage}
+        </Modal.Body>
+
+        <Modal.Footer className="border-0 pt-0">
+          <Button
+            variant="primary"
+            className="px-4 py-2 w-100 rounded-3 shadow-sm"
+            onClick={() => setModalShow(false)}
+          >
+            OK
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }

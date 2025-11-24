@@ -28,6 +28,10 @@ build/
 .env.test.local
 .env.production.local
 
+# profile photo
+/uploads/profilePhotos/
+
+
 
 
 

@@ -18,10 +18,12 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/auth", require("./routes/authRoutes"));
+app.use("/api/profile", require("./routes/profileRoutes"));
 
 // Static files for uploads
 const path = require("path");
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 // chat routes
 app.use("/api/search", searchRoutes);
 app.use("/api/chats", chatRoutes);

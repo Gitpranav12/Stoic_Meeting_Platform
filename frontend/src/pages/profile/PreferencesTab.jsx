@@ -1,11 +1,35 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SwitchToggle from "./SwitchToggle";
+import api from "../../api/http";
 import "./css/ProfileSettings.css";
 
 export default function PreferencesTab() {
-  const [darkMode, setDarkMode] = useState(false);
-  const [sound, setSound] = useState(true);
-  const [cam, setCam] = useState(true);
+  const [prefs, setPrefs] = useState({
+    darkMode: false,
+    autoJoinWithVideo: true,
+    soundEffects: true,
+  });
+
+  useEffect(() => {
+    const fetchPref = async () => {
+      try {
+        const res = await api.get("/api/profile");
+        setPrefs(res.data.preferences || prefs);
+      } catch (err) { console.error(err); }
+    };
+    fetchPref();
+  }, []);
+
+  const update = async (partial) => {
+    const newPrefs = { ...prefs, ...partial };
+    setPrefs(newPrefs);
+    try {
+      await api.put("/api/profile/preferences", partial);
+    } catch (err) {
+      console.error(err);
+      // optionally revert UI or show toast
+    }
+  };
 
   return (
     <div className="preferences-container">
@@ -24,7 +48,7 @@ export default function PreferencesTab() {
             <small className="text-muted">Preview meeting room in dark mode</small>
           </div>
         </div>
-        <SwitchToggle checked={darkMode} onChange={setDarkMode} />
+        <SwitchToggle checked={prefs.darkMode} onChange={(v)=>update({ darkMode: v })} />
       </div>
 
       <hr />
@@ -44,7 +68,7 @@ export default function PreferencesTab() {
             <small className="text-muted">Start meetings with camera enabled</small>
           </div>
         </div>
-        <SwitchToggle checked={cam} onChange={setCam} />
+        <SwitchToggle checked={prefs.autoJoinWithVideo} onChange={(v)=>update({ autoJoinWithVideo: v })} />
       </div>
 
       <hr />
@@ -64,7 +88,7 @@ export default function PreferencesTab() {
             <small className="text-muted">Play sounds for notifications and actions</small>
           </div>
         </div>
-        <SwitchToggle checked={sound} onChange={setSound} />
+        <SwitchToggle checked={prefs.soundEffects} onChange={(v)=>update({ soundEffects: v })} />
       </div>
 
     </div>

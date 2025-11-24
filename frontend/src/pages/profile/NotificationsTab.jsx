@@ -1,11 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SwitchToggle from "./SwitchToggle";
+import api from "../../api/http";
 import "./css/ProfileSettings.css";
 
 export default function NotificationsTab() {
-  const [emailNotif, setEmailNotif] = useState(true);
-  const [pushNotif, setPushNotif] = useState(true);
-  const [smsNotif, setSmsNotif] = useState(false);
+  const [notifs, setNotifs] = useState({ email: true, push: true, sms: false });
+
+  useEffect(() => {
+    const f = async () => {
+      try {
+        const res = await api.get("/api/profile");
+        setNotifs(res.data.notifications || notifs);
+      } catch (e) { console.error(e); }
+    };
+    f();
+  }, []);
+
+  const update = async (partial) => {
+    const merged = { ...notifs, ...partial };
+    setNotifs(merged);
+    try {
+      await api.put("/api/profile/notifications", partial);
+    } catch (err) {
+      console.error(err);
+      // handle revert if necessary
+    }
+  };
 
   return (
     <div className="preferences-container">
@@ -26,7 +46,7 @@ export default function NotificationsTab() {
             </small>
           </div>
         </div>
-        <SwitchToggle checked={emailNotif} onChange={setEmailNotif} />
+        <SwitchToggle checked={notifs.email} onChange={(v)=>update({ email: v })} />
       </div>
 
       <hr />
@@ -48,7 +68,7 @@ export default function NotificationsTab() {
             </small>
           </div>
         </div>
-        <SwitchToggle checked={pushNotif} onChange={setPushNotif} />
+        <SwitchToggle checked={notifs.push} onChange={(v)=>update({ push: v })} />
       </div>
 
       <hr />
@@ -70,7 +90,7 @@ export default function NotificationsTab() {
             </small>
           </div>
         </div>
-        <SwitchToggle checked={smsNotif} onChange={setSmsNotif} />
+        <SwitchToggle checked={notifs.sms} onChange={(v)=>update({ sms: v })} />
       </div>
 
     </div>

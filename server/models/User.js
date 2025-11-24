@@ -25,6 +25,20 @@ const userSchema = new mongoose.Schema({
     otp: { type: String }, // 🔐 OTP store
     otpExpire: { type: Date }, // ⏳ OTP time limit
 
+    // New: user preferences
+    preferences: {
+        darkMode: { type: Boolean, default: false },
+        autoJoinWithVideo: { type: Boolean, default: true },
+        soundEffects: { type: Boolean, default: true },
+    },
+
+    // New: notifications
+    notifications: {
+        email: { type: Boolean, default: true },
+        push: { type: Boolean, default: true },
+        sms: { type: Boolean, default: false },
+    },
+
 }, { timestamps: true });
 
 module.exports = mongoose.model("User", userSchema);
