@@ -1,8 +1,9 @@
 // src/pages/chatTab/ChatHeader.jsx
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Button, Dropdown } from "react-bootstrap";
 import { Video, MoreVertical, ArrowLeft } from "lucide-react";
+import chatService from "../../../api/chatService";
 
 export default function ChatHeader({
   currentChat,
@@ -11,6 +12,48 @@ export default function ChatHeader({
   isOnline = false,
   lastSeen = null,
 }) {
+  const [chatData, setChatData] = useState(currentChat || null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+      // debug: uncomment while testing
+  console.log('ChatHeader currentChat:', currentChat);
+    // if parent updates with a proper object, use it
+    setChatData(currentChat || null);
+  }, [currentChat]);
+
+
+
+  useEffect(() => {
+    // if chatData is missing details (string id or missing participants/name), try to fetch
+    const shouldFetch =
+      chatData &&
+      (typeof chatData === "string" ||
+        (!chatData.name &&
+          (!Array.isArray(chatData.participants) ||
+            chatData.participants.length === 0)));
+
+    if (shouldFetch) {
+      const chatId =
+        typeof chatData === "string" ? chatData : chatData._id || chatData.id;
+      if (!chatId) return;
+
+      let mounted = true;
+      setLoading(true);
+      chatService
+        .getChat(chatId)
+        .then((fetched) => {
+          if (mounted && fetched) setChatData(fetched);
+        })
+        .catch((err) => {
+          console.warn("ChatHeader: failed to fetch chat:", err);
+        })
+        .finally(() => mounted && setLoading(false));
+
+      return () => (mounted = false);
+    }
+  }, [chatData]);
+
   // get current user id from localStorage (various possible shapes)
   const logged = (() => {
     try {

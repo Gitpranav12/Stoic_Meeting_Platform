@@ -16,4 +16,11 @@ const createGroup = async (name, participantIds) => {
   return res.data;
 };
 
-export default { listChats, createOrGetPrivate, createGroup };
+// NEW: fetch one chat by id
+const getChat = async (chatId) => {
+  if (!chatId) throw new Error('chatId required');
+  const res = await http.get(`/api/chats/${chatId}`);
+  return res.data;
+};
+
+export default { listChats, createOrGetPrivate, createGroup, getChat };

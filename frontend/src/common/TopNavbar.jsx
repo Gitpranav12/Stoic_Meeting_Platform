@@ -8,6 +8,7 @@ import { openPrivateChat } from "../api/uiHelpers"; // adjust path if necessary
 import searchService from "../api/searchService";
 import CreateGroupModal from "./CreateGroupModal"; // adjust relative path if needed
 import SearchDropdown from "./SearchDropdown";
+import chatService from "../api/chatService";
 
 export default function TopNavbar({ active = "dashboard", onMenuClick }) {
   const navigate = useNavigate();
@@ -102,6 +103,31 @@ export default function TopNavbar({ active = "dashboard", onMenuClick }) {
   }, [query]);
 
   // click user result -> open private chat
+  // const handleUserClick = async (userObj) => {
+  //   try {
+  //     const userId = userObj._id || userObj.id;
+  //     if (!userId) {
+  //       alert("User id not found");
+  //       return;
+  //     }
+  //     await openPrivateChat(userId);
+
+  //     // navigate to chat page IMMEDIATELY
+  //     navigate("/dashboard/chat");
+
+  //     // refresh chat list and auto-select the stored chat id
+  //     if (window.__refreshChats) window.__refreshChats();
+
+  //     setShowDropdown(false);
+  //     setQuery("");
+  //   } catch (err) {
+  //     console.error(err);
+  //     alert(
+  //       "Failed to open chat: " + (err.response?.data?.error || err.message)
+  //     );
+  //   }
+  // };
+
   const handleUserClick = async (userObj) => {
     try {
       const userId = userObj._id || userObj.id;
@@ -109,10 +135,13 @@ export default function TopNavbar({ active = "dashboard", onMenuClick }) {
         alert("User id not found");
         return;
       }
-      await openPrivateChat(userId);
 
-      // navigate to chat page IMMEDIATELY
-      navigate("/dashboard/chat");
+      // openPrivateChat returns the chat object (create or get)
+      const chat = await openPrivateChat(userId);
+      const chatId = chat._id || chat.id || chat;
+
+      // Pass the chat object in navigation state so /dashboard/chat can render immediately
+      navigate("/dashboard/chat", { state: { chat } });
 
       // refresh chat list and auto-select the stored chat id
       if (window.__refreshChats) window.__refreshChats();
@@ -126,20 +155,6 @@ export default function TopNavbar({ active = "dashboard", onMenuClick }) {
       );
     }
   };
-
-  // // click message result -> open that chat
-  // const handleMessageClick = (msg) => {
-  //   const chatId =
-  //     (msg.chatId && (msg.chatId._id || msg.chatId)) || msg.chat || msg.room;
-  //   if (!chatId) {
-  //     alert("Chat id not available for this message");
-  //     return;
-  //   }
-  //   localStorage.setItem("stoic_select_chat", String(chatId));
-  //   if (window.__refreshChats) window.__refreshChats();
-  //   setShowDropdown(false);
-  //   setQuery("");
-  // };
 
   // robust extractor + opener for message search clicks
   const getChatIdFromMessage = (m) => {
@@ -163,12 +178,47 @@ export default function TopNavbar({ active = "dashboard", onMenuClick }) {
     try {
       const chatId = getChatIdFromMessage(m);
 
+      // if (chatId) {
+      //   // store + refresh + event + navigate (same pattern as openPrivateChat)
+      //   localStorage.setItem("stoic_select_chat", String(chatId));
+      //   if (window.__refreshChats) window.__refreshChats();
+
+      //   // dispatch openChat event so mounted ChatDashboard will react immediately
+      //   try {
+      //     window.dispatchEvent(
+      //       new CustomEvent("openChat", { detail: { chatId: String(chatId) } })
+      //     );
+      //   } catch (e) {
+      //     const ev = document.createEvent("CustomEvent");
+      //     ev.initCustomEvent("openChat", true, true, {
+      //       chatId: String(chatId),
+      //     });
+      //     window.dispatchEvent(ev);
+      //   }
+
+      //   // ensure the dashboard route is visible
+      //   navigate("/dashboard/chat");
+
+      //   // close dropdown + clear query
+      //   setShowDropdown(false);
+      //   setQuery("");
+      //   return;
+      // }
+
       if (chatId) {
-        // store + refresh + event + navigate (same pattern as openPrivateChat)
         localStorage.setItem("stoic_select_chat", String(chatId));
         if (window.__refreshChats) window.__refreshChats();
 
-        // dispatch openChat event so mounted ChatDashboard will react immediately
+        // attempt to fetch chat immediately so header can show full data
+        let chatObj = null;
+        try {
+          chatObj = await chatService.getChat(chatId);
+        } catch (e) {
+          // not fatal — we'll still navigate with chatId fallback
+          console.warn("Could not fetch chat details immediately", e);
+        }
+
+        // dispatch openChat event
         try {
           window.dispatchEvent(
             new CustomEvent("openChat", { detail: { chatId: String(chatId) } })
@@ -181,10 +231,9 @@ export default function TopNavbar({ active = "dashboard", onMenuClick }) {
           window.dispatchEvent(ev);
         }
 
-        // ensure the dashboard route is visible
-        navigate("/dashboard/chat");
+        // navigate and pass chat object if we have it, otherwise pass chatId
+        navigate("/dashboard/chat", { state: { chat: chatObj, chatId } });
 
-        // close dropdown + clear query
         setShowDropdown(false);
         setQuery("");
         return;

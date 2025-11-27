@@ -5,6 +5,7 @@ import ChatWindow from "./ChatWindow/ChatWindow";
 import chatService from "../../api/chatService";
 import messageService from "../../api/messageService";
 import { connectSocket, getSocket } from "../../api/socket";
+import { useLocation } from "react-router-dom";
 
 // safe helper to get display name from a participant entry (object or id)
 const participantDisplay = (p) => {
@@ -30,6 +31,31 @@ export default function ChatDashboard() {
   // inside ChatDashboard.jsx (top of component)
   const [onlineUsers, setOnlineUsers] = useState(new Set()); // store online user ids
   const [lastSeenMap, setLastSeenMap] = useState({}); // { userId: timestamp }
+
+  const location = useLocation();
+  const [currentChat, setCurrentChat] = useState(null);
+
+  useEffect(() => {
+    // If nav passed a chat object, use it immediately
+    if (location.state?.chat) {
+      setCurrentChat(location.state.chat);
+      return;
+    }
+
+    // if nav passed chatId, try fetch immediately
+    const id =
+      location.state?.chatId || localStorage.getItem("stoic_select_chat");
+    if (id) {
+      let mounted = true;
+      chatService
+        .getChat(id)
+        .then((c) => mounted && setCurrentChat(c))
+        .catch((e) => console.warn("Failed to load chat", e));
+      return () => (mounted = false);
+    }
+
+    // other logic: load default chats etc.
+  }, [location.state]);
 
   // --- responsive
   useEffect(() => {
@@ -258,9 +284,19 @@ export default function ChatDashboard() {
       }
 
       // if no pending selection and nothing selected yet, pick first available
+      // BUT do NOT auto-open a chat on mobile — show the chat list instead.
+      // (If user navigated via search/create a pending id is handled above.)
       if (!selectedChat) {
         const pick = groups[0] || privates[0];
-        if (pick) handleSelectChat(pick.id);
+
+        // Detect mobile — if mobile, don't auto-open the first chat.
+        const isMobileViewport = window.innerWidth <= 1024;
+
+        // Only auto-open if we are NOT on mobile. On mobile the user should
+        // first see the chat list and explicitly tap to open the chat.
+        if (pick && !isMobileViewport) {
+          handleSelectChat(pick.id);
+        }
       }
     } catch (err) {
       console.error("Failed to load chats", err);
@@ -358,7 +394,7 @@ export default function ChatDashboard() {
       {isMobile ? (
         showChatWindow ? (
           <ChatWindow
-            currentChat={selectedChat || {}}
+            currentChat={currentChat || selectedChat || {}}
             messages={messages}
             message={message}
             setMessage={setMessage}
@@ -390,7 +426,7 @@ export default function ChatDashboard() {
             privateChats={privateChats}
           />
           <ChatWindow
-            currentChat={selectedChat || {}}
+            currentChat={currentChat || selectedChat || {}}
             messages={messages}
             message={message}
             setMessage={setMessage}
